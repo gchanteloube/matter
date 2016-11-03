@@ -17,7 +17,7 @@ class HeaderView extends \Matter\IView {
             </div>
         ');
 
-        $this->js('~header.js[init]');
+        $this->js('~header.js');
     }
 }
 

@@ -13,17 +13,16 @@ abstract class IView {
     public $context = null;
     private $html = null;
     private $dataList = array();
-    private $type = '';
+    private $type = null;
 
-    public function json () {
+    public function json() {
         $this->type = 'json';
         return $this;
     }
 
-    public function data () {
-        $args = array_slice(func_get_args(), 0)[0];
-        if (Utils::valid($args)) {
-            foreach ($args as $key => $val) {
+    public function data($data) {
+        if (Utils::valid($data)) {
+            foreach ($data as $key => $val) {
                 $this->dataList[$key] = $val;
             }
         }
@@ -38,7 +37,7 @@ abstract class IView {
         return null;
     }
 
-    protected function html ($html) {
+    protected function html($html) {
         $this->html .= $html;
     }
 
@@ -48,25 +47,45 @@ abstract class IView {
     }
 
     protected function js($resource) {
-        if ($resource !== '~') {
+        if ($resource[0] !== '~') {
             // Lazy load
-            $resource = substr($resource, 1);
             $tmp = explode('[', $resource);
             $className = trim(explode('=', file_get_contents('../apps/' . $this->context . '/assets/js/' . $tmp[0]))[0]);
-            if (count($tmp) > 1) $method = substr($tmp[1], 0);
+            if (count($tmp) > 1) $method = substr($tmp[1], 0, strlen($tmp[1]) - 1);
             else $method = 'init';
             $varJs = strtolower($className);
 
             $minifier = new \MatthiasMullie\Minify\JS('../apps/' . $this->context . '/assets/js/' . $tmp[0]);
             $minifier->add('
-            var ' . $varJs . ' = new ' . $className . '();
+                var ' . $varJs . ' = new ' . $className . '();
                 ' . $varJs . '.' . $method . '();
             ');
             $this->html .= '<script type="text/javascript">' . $minifier->minify() . '</script>';
         } else {
-            $minifier = new \MatthiasMullie\Minify\JS('../apps/' . $this->context . '/assets/js/' . $resource);
+            $minifier = new \MatthiasMullie\Minify\JS('../apps/' . $this->context . '/assets/js/' . substr($resource, 1));
             $this->html .= '<script type="text/javascript">' . $minifier->minify() . '</script>';
         }
+    }
+
+    public function title($title) {
+        /* @var $kernel \Matter\Conversation */
+        $kernel = Conversation::init('KERNEL');
+        $kernel->set('title_mr', $title);
+        return $this;
+    }
+
+    public function description($description) {
+        /* @var $kernel \Matter\Conversation */
+        $kernel = Conversation::init('KERNEL');
+        $kernel->set('desc_mr', $description);
+        return $this;
+    }
+
+    public function image($path) {
+        /* @var $kernel \Matter\Conversation */
+        $kernel = Conversation::init('KERNEL');
+        $kernel->set('image_mr', $path);
+        return $this;
     }
 
     public function _this() {

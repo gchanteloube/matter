@@ -11,6 +11,9 @@ namespace Matter;
 class Builder {
     private $action = null;
     private $render = null;
+    private $title = null;
+    private $description = null;
+    private $favicon = null;
 
     public function __construct($action) {
         ini_set('session.use_trans_sid', 0);
@@ -43,9 +46,12 @@ class Builder {
             foreach ($data as $key => $val) {
                 if ((string) $val->attributes()->name == $this->action) {
                     foreach ($val as $subKey => $subVal) {
-                        $ctrl = Factory::get('\\Controller\\' . (string) $subVal->Controller, '../apps/' . (string) $subVal->Name . '/controller');
+                        $ctrl = Factory::get('\\Controller\\' . (string) $subVal->controller, '../apps/' . (string) $subVal->name . '/controller');
                         $this->render = Dispatcher::Forward($ctrl);
-                        $templateName = (string) $subVal->Template;
+                        $templateName = (string) $subVal->template;
+                        $this->title = (string) $subVal->title;
+                        $this->description = (string) $subVal->description;
+                        $this->favicon = (string) $subVal->favicon;
                     }
 
                     // Load friendly apps
@@ -60,7 +66,7 @@ class Builder {
                             $this->render = str_replace('{{current}}', $this->render, $template);
 
                             // Load meta data
-                            $this->render = str_replace('{{_meta_}}', $this->addMeta(), $template);
+                            $this->render = str_replace('{{_meta_}}', $this->addMeta(), $this->render);
 
                             // Load others app
                             foreach ($result[1] as $r) {
@@ -80,78 +86,50 @@ class Builder {
         }
     }
 
-    private function addMeta () {
-        $meta = '
-            <base href="' . Utils::getEnvironment()['path'] . '"><!--[if lte IE 6]></base><![endif]-->
-        ';
+    private function addMeta() {
+        /* @var $kernel \Matter\Conversation */
+        $kernel = Conversation::init('KERNEL');
+
+        // Master meta
+        $meta = '<base href="' . Utils::getEnvironment()['path'] . '"><!--[if lte IE 6]></base><![endif]-->';
+        if (Utils::valid($kernel->get('title_mr'))) $meta .= '<title>' . $kernel->get('title_mr') . '</title>';
+        else if (Utils::valid($this->title)) $meta .= '<title>' . $this->title . '</title>';
+        if (Utils::valid($kernel->get('desc_mr'))) $meta .= '<meta name="description" content="' . $kernel->get('desc_mr') . '">';
+        else if (Utils::valid($this->description)) $meta .= '<meta name="description" content="' . $this->description . '">';
+        if (Utils::valid($kernel->get('fav_mr'))) $meta .= '<link rel="icon" type="image/png" href="' . $kernel->get('fav_mr') . '" />';
+        else if (Utils::valid($this->favicon)) $meta .= '<link rel="icon" type="image/png" href="' . $this->favicon . '" />';
+
+        // FB meta
+        $social_ini = parse_ini_file("../conf/social.ini");
+        Utils::valid($social_ini['fb_app_id']) ? $meta .= '<meta property="fb:app_id" content="' . $social_ini['fb_app_id'] . '">' : false;
+        Utils::valid($social_ini['fb_page_id']) ? $meta .= '<meta property="fb:page_id" content="' . $social_ini['fb_page_id'] . '">' : false;
+        Utils::valid($social_ini['site_name']) ? $meta .= '<meta property="og:site_name" content="' . $social_ini['site_name'] . '">' : false;
+        if (Utils::valid($kernel->get('title_mr'))) $meta .= '<meta property="og:title" content="' . $kernel->get('title_mr') . '">';
+        else if (Utils::valid($social_ini['title'])) $meta .= '<meta property="og:title" content="' . $social_ini['title'] . '">';
+        if (Utils::valid($kernel->get('desc_mr'))) $meta .= '<meta property="og:description" content="' . $kernel->get('desc_mr') . '">';
+        else if (Utils::valid($social_ini['description'])) $meta .= '<meta property="og:description" content="' . $social_ini['description'] . '">';
+        if (Utils::valid($kernel->get('image_mr'))) $meta .= '<meta property="og:image" content="' . $kernel->get('image_mr') . '">';
+        else if (Utils::valid($social_ini['image'])) $meta .= '<meta property="og:image" content="' . $social_ini['image'] . '">';
+        $meta .= '<meta property="og:url" content="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" />';
+        $meta .= '<meta property="og:image:width" content="644" />';
+        $meta .= '<meta property="og:image:height" content="322" />';
+        $meta .= '<meta property="og:image:type" content="image/jpeg" />';
+        $meta .= '<meta property="og:type" content="article" />';
+        $meta .= '<meta property="al:web:url" content="http://' . $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] . '">';
+        $meta .= '<meta property="al:web:should_fallback" content="true">';
+
+        // Twitter meta
+        $meta .= '<meta name="twitter:card" content="summary_large_image">';
+        Utils::valid($social_ini['site_name']) ? $meta .= '<meta property="twitter:site_name" content="' . $social_ini['site_name'] . '">' : false;
+        $meta .= '<meta property="twitter:url" content="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" />';
+        if (Utils::valid($kernel->get('title_mr'))) $meta .= '<meta property="twitter:title" content="' . $kernel->get('title_mr') . '">';
+        else if (Utils::valid($social_ini['title'])) $meta .= '<meta property="twitter:title" content="' . $social_ini['title'] . '">';
+        if (Utils::valid($kernel->get('desc_mr'))) $meta .= '<meta property="twitter:description" content="' . $kernel->get('desc_mr') . '">';
+        else if (Utils::valid($social_ini['description'])) $meta .= '<meta property="twitter:description" content="' . $social_ini['description'] . '">';
+        if (Utils::valid($kernel->get('image_mr'))) $meta .= '<meta property="twitter:image" content="' . $kernel->get('image_mr') . '">';
+        else if (Utils::valid($social_ini['image'])) $meta .= '<meta property="twitter:image" content="' . $social_ini['image'] . '">';
 
         return $meta;
-
-        /*
-        $header = '';
-
-        // MASTER
-        if (Utils::isValid($kernel->getValue('title'))) $header .= '<title>' . $kernel->getValue('title') . '</title>';
-        else $header .= '<title>' . $this->title . '</title>';
-        if (Utils::isValid($kernel->getValue('description'))) $header .= '<meta name="description" content="' . $kernel->getValue('description') . '">';
-        else $header .= '<meta name="description" content="' . $this->description . '">';
-
-        // FB
-        if (Utils::isValid($this->fb_app_id)) $header .= '<meta property="fb:app_id" content="' . $this->fb_app_id . '">';
-        if (Utils::isValid($this->fb_page_id)) $header .= '<meta property="fb:page_id" content="' . $this->fb_page_id . '">';
-        if (Utils::isValid($this->fb_site_name)) $header .= '<meta property="og:site_name" content="' . $this->fb_site_name . '">';
-        $header .= '<meta property="og:locale" content="fr_FR" />';
-        if (Utils::isValid($kernel->getValue('title'))) $header .= '<meta property="og:title" content="' . $kernel->getValue('title') . '">';
-        else $header .= '<meta property="og:title" content="' . $this->title . '">';
-        if (Utils::isValid($kernel->getValue('description'))) $header .= '<meta property="og:description" content="' . $kernel->getValue('description') . '">';
-        else $header .= '<meta property="og:description" content="' . $this->description . '">';
-        $header .= '<meta property="og:url" content="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" />';
-        if (Utils::isValid($kernel->getValue('image'))) $header .= '<meta property="og:image" content="' . $kernel->getValue('image') . '">';
-        else $header .= '<meta property="og:image" content="' . Utils::getEnvironmentUrl() . $this->image . '">';
-        $header .= '<meta property="og:image:width" content="644" />';
-        $header .= '<meta property="og:image:height" content="322" />';
-        $header .= '<meta property="og:image:type" content="image/jpeg" />';
-        $header .= '<meta property="og:type" content="article" />';
-
-        $header .= '<meta property="al:web:url" content="http://' . $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] . '">';
-        $header .= '<meta property="al:web:should_fallback" content="true">';
-
-        // TWITTER
-        $header .= '<meta name="twitter:card" content="summary_large_image">';
-        if (Utils::isValid($this->twitter_site_name)) $header .= '<meta property="twitter:site_name" content="' . $this->twitter_site_name . '">';
-        $header .= '<meta property="twitter:url" content="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" />';
-        if (Utils::isValid($kernel->getValue('title'))) $header .= '<meta property="twitter:title" content="' . $kernel->getValue('title') . '">';
-        else $header .= '<meta property="twitter:title" content="' . $this->title . '">';
-        if (Utils::isValid($kernel->getValue('description'))) $header .= '<meta property="twitter:description" content="' . $kernel->getValue('description') . '">';
-        else $header .= '<meta property="twitter:description" content="' . $this->description . '">';
-        if (Utils::isValid($kernel->getValue('image'))) $header .= '<meta property="twitter:image" content="' . $kernel->getValue('image') . '">';
-        else $header .= '<meta property="twitter:image" content="' . $this->image . '">';
-
-        // FAVICON
-        if (Utils::isValid($kernel->getValue('favicon'))) $header .= '<link rel="icon" type="image/png" href="' . $kernel->getValue('favicon') . '" />';
-        else $header .= '<link rel="icon" type="image/png" href="' . $this->favicon . '" />';
-
-        $header .= '<meta name="viewport" content="width=device-width">';
-        $header .= $this->baseUrl;
-        $header .= '<meta name="robots" content="index, follow, noarchive">';
-
-        // CSS
-        $header .= '<style type="text/css">' . $this->getCssBlock() . '</style>';
-        if ($this->cache) {
-            $header .= "#{CSS}";
-        }
-
-        // JS
-        $header .= '<script type="text/javascript">' . $this->getJsBlock() . '</script>';
-        foreach ($this->jsInclude as $js) {
-            $header .= $js;
-        }
-        if ($this->cache) {
-            $header .= "#{Js}";
-        }
-
-        return str_replace("%HEADER%", $header, $text);
-        */
     }
 }
 

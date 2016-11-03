@@ -9,7 +9,9 @@ namespace Matter;
  */
 
 abstract class IModel {
-
+    public function _this() {
+        return get_object_vars($this);
+    }
 }
 
 ?>

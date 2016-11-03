@@ -12,6 +12,7 @@ class MyView extends \Matter\IView {
         $this->html('
             Voici la donnée envoyée : ' . $this->d('pouet3') . '
         ');
+        $this->title('toto')->description('Ma description')->image('image.png');
     }
 }
 
