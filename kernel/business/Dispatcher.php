@@ -11,7 +11,7 @@ class Dispatcher {
             $action = $get->get('a_mr');
             $specificAction = false;
         }
-        $ctrl->action = $action;
+        $ctrl->context = $action;
         if (!Utils::valid($method) && !$specificAction) {
             $method = $get->get('m_mr');
         }
@@ -38,8 +38,9 @@ class Dispatcher {
 
         if (is_subclass_of($view, '\Matter\IView')) {
             $view->_default();
-            if ($view->type == 'json') $content = json_encode($view->render());
-            else $content = $view->render();
+            $attributes = $view->_this();
+            if ($attributes['type'] == 'json') $content = json_encode($attributes['html']);
+            else $content = $attributes['html'];
         } else {
             throw new \Exception('Your controller try to call an unMatter view object (check extends properties)');
         }

@@ -59,9 +59,12 @@ class Builder {
                             // Load master app
                             $this->render = str_replace('{{current}}', $this->render, $template);
 
+                            // Load meta data
+                            $this->render = str_replace('{{_meta_}}', $this->addMeta(), $template);
+
                             // Load others app
                             foreach ($result[1] as $r) {
-                                if ($r != 'current') {
+                                if ($r != 'current' && $r != '_meta_') {
                                     $tmp = explode('.', $r);
                                     $ctrl = Factory::get('\\Controller\\' . $tmp[1], '../apps/' . $tmp[0] . '/controller');
                                     if (count($tmp) == 3) $content = Dispatcher::Forward($ctrl, $tmp[0], $tmp[2]);
@@ -75,6 +78,80 @@ class Builder {
                 }
             }
         }
+    }
+
+    private function addMeta () {
+        $meta = '
+            <base href="' . Utils::getEnvironment()['path'] . '"><!--[if lte IE 6]></base><![endif]-->
+        ';
+
+        return $meta;
+
+        /*
+        $header = '';
+
+        // MASTER
+        if (Utils::isValid($kernel->getValue('title'))) $header .= '<title>' . $kernel->getValue('title') . '</title>';
+        else $header .= '<title>' . $this->title . '</title>';
+        if (Utils::isValid($kernel->getValue('description'))) $header .= '<meta name="description" content="' . $kernel->getValue('description') . '">';
+        else $header .= '<meta name="description" content="' . $this->description . '">';
+
+        // FB
+        if (Utils::isValid($this->fb_app_id)) $header .= '<meta property="fb:app_id" content="' . $this->fb_app_id . '">';
+        if (Utils::isValid($this->fb_page_id)) $header .= '<meta property="fb:page_id" content="' . $this->fb_page_id . '">';
+        if (Utils::isValid($this->fb_site_name)) $header .= '<meta property="og:site_name" content="' . $this->fb_site_name . '">';
+        $header .= '<meta property="og:locale" content="fr_FR" />';
+        if (Utils::isValid($kernel->getValue('title'))) $header .= '<meta property="og:title" content="' . $kernel->getValue('title') . '">';
+        else $header .= '<meta property="og:title" content="' . $this->title . '">';
+        if (Utils::isValid($kernel->getValue('description'))) $header .= '<meta property="og:description" content="' . $kernel->getValue('description') . '">';
+        else $header .= '<meta property="og:description" content="' . $this->description . '">';
+        $header .= '<meta property="og:url" content="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" />';
+        if (Utils::isValid($kernel->getValue('image'))) $header .= '<meta property="og:image" content="' . $kernel->getValue('image') . '">';
+        else $header .= '<meta property="og:image" content="' . Utils::getEnvironmentUrl() . $this->image . '">';
+        $header .= '<meta property="og:image:width" content="644" />';
+        $header .= '<meta property="og:image:height" content="322" />';
+        $header .= '<meta property="og:image:type" content="image/jpeg" />';
+        $header .= '<meta property="og:type" content="article" />';
+
+        $header .= '<meta property="al:web:url" content="http://' . $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] . '">';
+        $header .= '<meta property="al:web:should_fallback" content="true">';
+
+        // TWITTER
+        $header .= '<meta name="twitter:card" content="summary_large_image">';
+        if (Utils::isValid($this->twitter_site_name)) $header .= '<meta property="twitter:site_name" content="' . $this->twitter_site_name . '">';
+        $header .= '<meta property="twitter:url" content="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" />';
+        if (Utils::isValid($kernel->getValue('title'))) $header .= '<meta property="twitter:title" content="' . $kernel->getValue('title') . '">';
+        else $header .= '<meta property="twitter:title" content="' . $this->title . '">';
+        if (Utils::isValid($kernel->getValue('description'))) $header .= '<meta property="twitter:description" content="' . $kernel->getValue('description') . '">';
+        else $header .= '<meta property="twitter:description" content="' . $this->description . '">';
+        if (Utils::isValid($kernel->getValue('image'))) $header .= '<meta property="twitter:image" content="' . $kernel->getValue('image') . '">';
+        else $header .= '<meta property="twitter:image" content="' . $this->image . '">';
+
+        // FAVICON
+        if (Utils::isValid($kernel->getValue('favicon'))) $header .= '<link rel="icon" type="image/png" href="' . $kernel->getValue('favicon') . '" />';
+        else $header .= '<link rel="icon" type="image/png" href="' . $this->favicon . '" />';
+
+        $header .= '<meta name="viewport" content="width=device-width">';
+        $header .= $this->baseUrl;
+        $header .= '<meta name="robots" content="index, follow, noarchive">';
+
+        // CSS
+        $header .= '<style type="text/css">' . $this->getCssBlock() . '</style>';
+        if ($this->cache) {
+            $header .= "#{CSS}";
+        }
+
+        // JS
+        $header .= '<script type="text/javascript">' . $this->getJsBlock() . '</script>';
+        foreach ($this->jsInclude as $js) {
+            $header .= $js;
+        }
+        if ($this->cache) {
+            $header .= "#{Js}";
+        }
+
+        return str_replace("%HEADER%", $header, $text);
+        */
     }
 }
 

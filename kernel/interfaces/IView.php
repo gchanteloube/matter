@@ -10,10 +10,10 @@ use MatthiasMullie\Minify\Minify;
  */
 
 abstract class IView {
-    public $action = null;
+    public $context = null;
     private $html = null;
     private $dataList = array();
-    public $type = '';
+    private $type = '';
 
     public function json () {
         $this->type = 'json';
@@ -38,44 +38,39 @@ abstract class IView {
         return null;
     }
 
-    public function html ($html) {
+    protected function html ($html) {
         $this->html .= $html;
     }
 
-    protected function css() {
-        $args = array_slice(func_get_args(), 0);
-        foreach ($args as $a) {
-            $minifier = new \MatthiasMullie\Minify\CSS('../apps/' . $this->action . '/assets/css/' . $a);
-            $this->html .= '<style type="text/css">' . $minifier->minify() . '</style>';
+    protected function css($resource) {
+        $minifier = new \MatthiasMullie\Minify\CSS('../apps/' . $this->context . '/assets/css/' . $resource);
+        $this->html .= '<style type="text/css">' . $minifier->minify() . '</style>';
+    }
+
+    protected function js($resource) {
+        if ($resource !== '~') {
+            // Lazy load
+            $resource = substr($resource, 1);
+            $tmp = explode('[', $resource);
+            $className = trim(explode('=', file_get_contents('../apps/' . $this->context . '/assets/js/' . $tmp[0]))[0]);
+            if (count($tmp) > 1) $method = substr($tmp[1], 0);
+            else $method = 'init';
+            $varJs = strtolower($className);
+
+            $minifier = new \MatthiasMullie\Minify\JS('../apps/' . $this->context . '/assets/js/' . $tmp[0]);
+            $minifier->add('
+            var ' . $varJs . ' = new ' . $className . '();
+                ' . $varJs . '.' . $method . '();
+            ');
+            $this->html .= '<script type="text/javascript">' . $minifier->minify() . '</script>';
+        } else {
+            $minifier = new \MatthiasMullie\Minify\JS('../apps/' . $this->context . '/assets/js/' . $resource);
+            $this->html .= '<script type="text/javascript">' . $minifier->minify() . '</script>';
         }
     }
 
-    protected function js() {
-        $args = array_slice(func_get_args(), 0);
-        foreach ($args as $a) {
-            if ($a[0] !== '~') {
-                // Lazy load
-                $tmp = explode('[', $a);
-                $className = trim(explode('=', file_get_contents('../apps/' . $this->action . '/assets/js/' . $tmp[0]))[0]);
-                if (count($tmp) > 1) $method = substr($tmp[1], 0, strlen($tmp[1]) - 1);
-                else $method = 'init';
-                $varJs = strtolower($className);
-
-                $minifier = new \MatthiasMullie\Minify\JS('../apps/' . $this->action . '/assets/js/' . $tmp[0]);
-                $minifier->add('
-                var ' . $varJs . ' = new ' . $className . '();
-                    ' . $varJs . '.' . $method . '();
-                ');
-                $this->html .= '<script type="text/javascript">' . $minifier->minify() . '</script>';
-            } else {
-                $minifier = new \MatthiasMullie\Minify\JS('../apps/' . $this->action . '/assets/js/' . $a);
-                $this->html .= '<script type="text/javascript">' . $minifier->minify() . '</script>';
-            }
-        }
-    }
-
-    public function render () {
-        return $this->html;
+    public function _this() {
+        return get_object_vars($this);
     }
 }
 

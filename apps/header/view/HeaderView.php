@@ -13,11 +13,11 @@ class HeaderView extends \Matter\IView {
 
         $this->html('
             <div class="test">
-                Header !!!
+                <a href="starter.test">Header !!!</a>
             </div>
         ');
 
-        $this->js('header.js[init]');
+        $this->js('~header.js[init]');
     }
 }
 
