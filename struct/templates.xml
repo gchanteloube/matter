@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Actions>
+    <Action name="starter">
+        <Application>
+            <Template>master</Template>
+            <Name>starter</Name>
+            <Controller>MyController</Controller>
+            <Position>1</Position>
+            <Title>Clozly - Find, enjoy, sell, agin!</Title>
+        </Application>
+    </Action>
+</Actions>

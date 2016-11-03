@@ -1,0 +1,12 @@
+
+
+    <Action name="#ClassName#">
+        <Application>
+            <Template>MasterTemplate</Template>
+            <Nom>#ClassName#</Nom>
+            <Controleur>#ClassName#Ctrl</Controleur>
+            <Position>1</Position>
+            <Title>YOUR_TITLE</Title>
+        </Application>
+    </Action>
+</Actions>

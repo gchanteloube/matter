@@ -1,0 +1,10 @@
+Options +FollowSymlinks
+RewriteEngine On
+
+Options -Indexes
+
+RewriteRule ^$ kernel/door.php?a_mr=starter [L]
+RewriteRule ^S/([a0-z9_]*)\.([a0-z9_]*)$ kernel/door.php?a_mr=$1&s_mr=true&m_mr=$2 [QSA,L]
+RewriteRule ^S/([a0-z9_]*)$ kernel/door.php?a_mr=$1&s_mr=true [QSA,L]
+RewriteRule ^([a0-z9_]*)\.([a0-z9_]*)$ kernel/door.php?a_mr=$1&m_mr=$2 [QSA,L]
+RewriteRule ^([a0-z9_]*)$ kernel/door.php?a_mr=$1 [QSA,L]
