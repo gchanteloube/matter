@@ -9,9 +9,9 @@ namespace View;
  */
 class MyView extends \Matter\IView {
     public function _default () {
-        $this->content = '
+        $this->html('
             Voici la donnée envoyée : ' . $this->d('pouet3') . '
-        ';
+        ');
     }
 }
 

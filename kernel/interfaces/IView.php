@@ -1,6 +1,7 @@
 <?php
 
 namespace Matter;
+use MatthiasMullie\Minify\Minify;
 
 /**
  * Description of IView
@@ -9,7 +10,8 @@ namespace Matter;
  */
 
 abstract class IView {
-    public $content;
+    public $action = null;
+    private $html = null;
     private $dataList = array();
     public $type = '';
 
@@ -35,10 +37,46 @@ abstract class IView {
         }
         return null;
     }
-    public function _default () {
-        return $this->content;
+
+    public function html ($html) {
+        $this->html .= $html;
     }
 
+    protected function css() {
+        $args = array_slice(func_get_args(), 0);
+        foreach ($args as $a) {
+            $minifier = new \MatthiasMullie\Minify\CSS('../apps/' . $this->action . '/assets/css/' . $a);
+            $this->html .= '<style type="text/css">' . $minifier->minify() . '</style>';
+        }
+    }
+
+    protected function js() {
+        $args = array_slice(func_get_args(), 0);
+        foreach ($args as $a) {
+            if ($a[0] !== '~') {
+                // Lazy load
+                $tmp = explode('[', $a);
+                $className = trim(explode('=', file_get_contents('../apps/' . $this->action . '/assets/js/' . $tmp[0]))[0]);
+                if (count($tmp) > 1) $method = substr($tmp[1], 0, strlen($tmp[1]) - 1);
+                else $method = 'init';
+                $varJs = strtolower($className);
+
+                $minifier = new \MatthiasMullie\Minify\JS('../apps/' . $this->action . '/assets/js/' . $tmp[0]);
+                $minifier->add('
+                var ' . $varJs . ' = new ' . $className . '();
+                    ' . $varJs . '.' . $method . '();
+                ');
+                $this->html .= '<script type="text/javascript">' . $minifier->minify() . '</script>';
+            } else {
+                $minifier = new \MatthiasMullie\Minify\JS('../apps/' . $this->action . '/assets/js/' . $a);
+                $this->html .= '<script type="text/javascript">' . $minifier->minify() . '</script>';
+            }
+        }
+    }
+
+    public function render () {
+        return $this->html;
+    }
 }
 
 ?>

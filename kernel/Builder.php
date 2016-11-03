@@ -37,7 +37,7 @@ class Builder {
 
     public function build() {
         if (Utils::valid($this->action)) {
-            $data = simplexml_load_file("../struct/templates.xml");
+            $data = simplexml_load_file("../struct/apps.xml");
             $templateName = null;
 
             foreach ($data as $key => $val) {
@@ -76,7 +76,6 @@ class Builder {
             }
         }
     }
-
 }
 
 ?>

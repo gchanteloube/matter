@@ -3,7 +3,8 @@
 namespace Matter;
 
 // Class auto loaded
-require_once 'business/Utils.php';
+require_once 'dependency/composer/vendor/autoload.php';
+require_once 'dependency/Utils.php';
 Utils::loader('interfaces');
 Utils::loader('business');
 

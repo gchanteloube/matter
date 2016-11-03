@@ -24,6 +24,7 @@ abstract class IController {
         /* @var $view IView */
         $view = Factory::get('\\View\\' . $name, '../apps/' . $this->action . '/view');
         if (is_subclass_of($view, '\Matter\IView')) {
+            $view->action = $this->action;
             return $view;
         } else {
             throw new \Exception('Your controller try to call an unMatter view object (check extends properties)');

@@ -38,8 +38,8 @@ class Dispatcher {
 
         if (is_subclass_of($view, '\Matter\IView')) {
             $view->_default();
-            if ($view->type == 'json') $content = json_encode($view->content);
-            else $content = $view->content;
+            if ($view->type == 'json') $content = json_encode($view->render());
+            else $content = $view->render();
         } else {
             throw new \Exception('Your controller try to call an unMatter view object (check extends properties)');
         }
