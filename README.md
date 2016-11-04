@@ -148,5 +148,5 @@ You can defined much utils class you want, in struct/dependency/utils directory.
 directly, every where.
 >Call your utils method
 ```php
-$data = _u('method', $myData);
+$data = _u('method', $myData, $otherData, etc.);
 ```
