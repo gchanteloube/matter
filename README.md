@@ -141,3 +141,12 @@ character behind your file name.*
 $this->title('MyTitle')->description('MyDescription')->image('myImage.png');
 ```
 *Used for SEO and social posts*
+
+Utils
+-----
+You can defined much utils class you want, in struct/dependency/utils directory. They are autoloaded and you can use 
+directly, every where.
+>Call your utils method
+```php
+$data = _u('method', $myData);
+```
