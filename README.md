@@ -10,13 +10,17 @@ Install
 Architecture
 ------------
 
-                                                 _______________________
-                                                |                       |
-                                                |                       |
-    http://your-project/[action][.method] ----> |    Matter kernel      |
-                                                |                       |
-                                                |_______________________|
-                                                
+                    (master app)              _______________________
+                          |                  |                       |
+                          |                  |                       |
+    http://your-project/[app][.method] ====> |     MATTER KERNEL     | -----> [Load app]
+                                             |                       |             |
+                                             |_______________________|             |
+                                                                                   | -app
+                                                                                   | -method
+                                                                                   |
+                                                                                   |
+                                                                         
 
 There are only 3 directories
 - apps *(your all apps)*
