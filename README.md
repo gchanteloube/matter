@@ -28,9 +28,15 @@ Architecture
         |                |                         | <------------
         |                 ---> [view]              |
         |__________________________________________|
-<br /><br />
+
+
+&nbsp;
+
 **First step**
 1. **Build your template**
+
+&nbsp;
+
 struct/templates/yourTemplate.html
 It's a simple html file, with key tag for load your apps in specific place.
 
