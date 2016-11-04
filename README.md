@@ -7,8 +7,17 @@ Install
 - Unzip in your web server
 - Goto on localhost/matter/
 
-Structure
----------
+Architecture
+------------
+
+                                                 _______________________
+                                                |                       |
+                                                |                       |
+    http://your-project/[action][.method] ----> |    Matter kernel      |
+                                                |                       |
+                                                |_______________________|
+                                                
+
 There are only 3 directories
 - apps *(your all apps)*
 - conf *(your web site configuration)*
