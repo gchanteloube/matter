@@ -39,33 +39,37 @@ Controller is the entry door for your app. You can call it with specific method
 *(section: Call your app)*, but without method it's "_default()" method which will 
 called.
 
-Below, some frequently usages:
->**Use your model:**
+**Below, some frequently usages:**
+
+>Use your model:
 ```php
 $mdl = $this->mdl('MyModel');
 $mdl->YourMethod();
 ```
-
 &nbsp;
 
->**Use your view:**
+>Use your view:
 ```php
 return $this->view('MyView');
 ```
+>>&nbsp;
 
->**Add data to your view:**
+>Add data to your view:
 ```php
 $this->view('MyView')->data(array('MyData' => $myData));
 ```
+&nbsp;
 
->**Return a json view**
+>Return a json view:
 ```php
 $this->view('MyView')->json();
 ```
->**You can pipe these method:**
+&nbsp;
+>You can pipe these method:
 ```php
 $this->view('MyView')->data(array('MyData' => $myData))->json();
 ```
+&nbsp;
 
 View
 ----
