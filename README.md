@@ -29,11 +29,9 @@ Architecture
         |                 ---> [view]              |
         |__________________________________________|
 
-
-There are only 3 directories
-- apps *(your all apps)*
-- conf *(your web site configuration)*
-- struct *(your web site structure, like templates, dependency, etc.)*
+**First step**
+1. Build your template
+    struct/templates/yourTemplate.html
 
 Build an app
 ------------
