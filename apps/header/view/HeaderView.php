@@ -13,7 +13,7 @@ class HeaderView extends \Matter\IView {
 
         $this->html('
             <div class="test">
-                <a href="starter.test">Header !!!</a>
+                <a href="starter.test">Header !!! ' . $this->d('utils') . '</a>
             </div>
         ');
 

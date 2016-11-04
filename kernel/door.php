@@ -1,24 +1,25 @@
 <?php
 
-namespace Matter;
-
 // Class auto loaded
 require_once 'dependency/composer/vendor/autoload.php';
 require_once 'dependency/Utils.php';
-Utils::loader('interfaces');
-Utils::loader('business');
+\Matter\Utils::loader('interfaces');
+\Matter\Utils::loader('business');
+\Matter\Utils::loader('../struct/dependency/business');
+\Matter\Utils::loader('../struct/dependency/composer');
+\Matter\Utils::loader('../struct/dependency/utils');
 
 /* @var $get Conversation */
-$get = Conversation::init("GET");
+$get = \Matter\Conversation::init("GET");
 $action = $get->get("a_mr");
 
 // Check page
-if (Utils::valid($action)) {
+if (\Matter\Utils::valid($action)) {
     /* @var $builder Builder */
-    $builder = Factory::get('\\Matter\\Builder', '.', $action);
+    $builder = \Matter\Factory::get('\\Matter\\Builder', '.', $action);
 
     // Test script value
-    if (Utils::valid($get->get("s_mr"))) {
+    if (\Matter\Utils::valid($get->get("s_mr"))) {
         echo $builder->alone();
     } else {
         try {
@@ -47,6 +48,21 @@ function getTrace (\Exception $e) {
     }
 
     return $trace;
+}
+
+function _u($method, $parameters) {
+    $flux = opendir('../struct/dependency/utils');
+    if ($flux) {
+        while (false != ($file = readdir($flux))) {
+            $extension = explode('.', $file);
+            if ($file != '.' && $file != '..' && $extension[1] == 'php') {
+                if (strpos(file_get_contents('../struct/dependency/utils/' . $file), $method) !== false) {
+                    $args = array_slice(func_get_args(), 1);
+                    return call_user_func_array($extension[0] . '::' . $method, $args);
+                }
+            }
+        }
+    }
 }
 
 ?>
