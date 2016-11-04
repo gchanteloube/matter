@@ -30,8 +30,6 @@ Architecture
         |__________________________________________|
 
 
-&nbsp;
-
 First step
 ----------
 1. **Build your template**. Your templates are all in struct/templates/yourTemplate.html directory.
