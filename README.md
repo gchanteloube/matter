@@ -46,8 +46,7 @@ $mdl = $this->mdl('MyModel');
 $mdl->YourMethod();
 ```
 
-sdfsqfd
-sdf
+&nbsp;
 
 >**Use your view:**
 ```php
