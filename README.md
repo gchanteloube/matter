@@ -52,7 +52,7 @@ $mdl->YourMethod();
 ```php
 return $this->view('MyView');
 ```
->>&nbsp;
+&nbsp;
 
 >Add data to your view:
 ```php
