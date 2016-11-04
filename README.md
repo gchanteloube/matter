@@ -1,18 +1,21 @@
 MATTER FRAMEWORK
-==========================
+================
 
-##Install
+Install
+-------
 - Just download source (soon on github!).
 - Unzip in your web server
 - Goto on localhost/matter/
 
-##Structure
+Structure
+---------
 There are only 3 directories
 - apps *(your all apps)*
 - conf *(your web site configuration)*
 - struct *(your web site structure, like templates, dependency, etc.)*
 
-##Build an app
+Build an app
+------------
 Matter use independent app. An app is like a module, autonomous. It may be your
 footer, payment gateway or welcome container. Each app is based on MVC pattern.
 
@@ -30,7 +33,8 @@ Your app directory is created, with 4 subdirectories:
 By default, this files (and class name), were created with the same name that your 
 app. But you are free for the naming.
 
-###Controller
+Controller
+----------
 Controller is the entry door for your app. You can call it with specific method 
 *(section: Call your app)*, but without method it's "_default()" method which will 
 call.
@@ -58,7 +62,8 @@ You can pipe these method:
 $this->view('MyView')->data(array('MyData' => $myData))->json();
 ```
 
-###View
+View
+----
 View is the html render of your app. You have to define "_default" method for 
 return the html.
 
