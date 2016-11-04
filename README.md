@@ -39,13 +39,13 @@ Controller is the entry door for your app. You can call it with specific method
 *(section: Call your app)*, but without method it's "_default()" method which will 
 call.
 
-*Use your model*
+Use your model:
 ```php
 $mdl = $this->mdl('MyModel');
 $mdl->YourMethod();
 ```
 
-* Use your view:
+Use your view:
 ```php
 return $this->view('MyView');
 ```
