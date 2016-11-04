@@ -21,7 +21,7 @@ Architecture
                                                         |
                                                          ---> [template] -----> [load template app]
                                                                   |
-         __________________________________________               |
+         ___________________MVC____________________               |
         |/apps/[app]                               |       (load master app)
         |                                          |              |
         | ---> [controller[.method]] ----> [model] |              |
@@ -34,7 +34,10 @@ Architecture
 
 **First step**
 1. **Build your template**. Your templates are all in struct/templates/yourTemplate.html directory.
-A template it's a simple html file, with key tag {{app[.method]}} for load your apps in specific place.
+A template it's a simple html file, with key tag {{app[.method]}} for load your apps in specific place. 
+Your master app will loaded with {{current}} key tag, wherever you want.
+2. **Build your app**. All details are below. Your app is declared in struct/apps.xml file.
+3. **Develop your app**. Make your business code in your MVC app.
 
 Build an app
 ------------
