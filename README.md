@@ -150,3 +150,11 @@ directly, every where.
 ```php
 $data = _u('method', $myData, $otherData, etc.);
 ```
+
+Database
+--------
+TODO
+
+i18n
+----
+TODO
