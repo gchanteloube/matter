@@ -32,7 +32,8 @@ Architecture
 
 &nbsp;
 
-**First step**
+First step
+----------
 1. **Build your template**. Your templates are all in struct/templates/yourTemplate.html directory.
 A template it's a simple html file, with key tag {{app[.method]}} for load your apps in specific place. 
 Your master app will loaded with {{current}} key tag, wherever you want.
