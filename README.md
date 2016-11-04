@@ -46,7 +46,8 @@ called.
 $mdl = $this->mdl('MyModel');
 $mdl->YourMethod();
 ```
-&nbsp;
+&nbsp;fdhfdhf
+fdhfdh
 
 >Use your view:
 ```php
