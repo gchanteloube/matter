@@ -53,23 +53,28 @@ $mdl->YourMethod();
 ```php
 return $this->view('MyView');
 ```
+
 &nbsp;
 
 >Add data to your view:
 ```php
 $this->view('MyView')->data(array('MyData' => $myData));
 ```
+
 &nbsp;
 
 >Return a json view:
 ```php
 $this->view('MyView')->json();
 ```
+
 &nbsp;
+
 >You can pipe these method:
 ```php
 $this->view('MyView')->data(array('MyData' => $myData))->json();
 ```
+
 &nbsp;
 
 View
