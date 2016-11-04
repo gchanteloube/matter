@@ -28,7 +28,7 @@ Architecture
         |                |                         | <------------
         |                 ---> [view]              |
         |__________________________________________|
-
+<br /><br />
 **First step**
 1. **Build your template**
 struct/templates/yourTemplate.html
