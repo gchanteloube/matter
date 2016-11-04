@@ -41,15 +41,15 @@ called.
 
 **Below, some frequently usages:**
 
->**Use your model:**
+>Use your model:
 ```php
 $mdl = $this->mdl('MyModel');
 $mdl->YourMethod();
 ```
-&nbsp;fdhfdhf
-fdhfdh
 
->**Use your view:**
+&nbsp;
+
+>Use your view:
 ```php
 return $this->view('MyView');
 ```
