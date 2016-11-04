@@ -105,11 +105,10 @@ $this->html('
 >Add css or js resources:
 ```php
 $this->css('header.css');
-$this->js('header.js');
+$this->js('header.js'); // Or $this->js('header.js[myMethod]');
 ```
-*Your js file is autoloaded, with "init" method or specific method between hook, as 
-js('header.js\[myMethod\]). For not autoload your js, just add "~" character behind 
-your file name.*
+*Your js file is autoloaded, with "init" method or specific method between hook. For not autoload your js, just add "~" 
+character behind your file name.*
 
 &nbsp;
 
@@ -117,4 +116,4 @@ your file name.*
 ```php
 $this->title('MyTitle')->description('MyDescription')->image('myImage.png');
 ```
-*Used for referencement and social posts*
+*Used for SEO and social posts*
