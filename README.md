@@ -32,7 +32,7 @@ Architecture
 
 First step
 ----------
-1. **Build your template**. Your templates are all in struct/templates/yourTemplate.html directory.
+1. **Build your template**. Your templates are all in struct/templates/ directory.
 A template it's a simple html file, with key tag {{app[.method]}} for load your apps in specific place. 
 Your master app will loaded with {{current}} key tag, wherever you want.
 2. **Build your app**. All details are below. Your app is declared in struct/apps.xml file.
@@ -144,7 +144,7 @@ $this->title('MyTitle')->description('MyDescription')->image('myImage.png');
 
 Utils
 -----
-You can defined much utils class you want, in struct/dependency/utils directory. They are autoloaded and you can use 
+You can defined much utils class you want, in struct/dependency/utils/ directory. They are autoloaded and you can use 
 directly, every where.
 >Call your utils method
 ```php
