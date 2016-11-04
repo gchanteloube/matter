@@ -16,11 +16,19 @@ Architecture
     http://your-project/[app][.method] ====> |     MATTER KERNEL     | -----> [Load app]
                                              |                       |             |
                                              |_______________________|             |
-                                                                                   | -app
-                                                                                   | -method
+                                                                                   |
+                                                                                   | (master app)
                                                                                    |
                                                                                    |
-                                                                         
+                                                                                   |
+                                                                    _______________________________________
+                                                                   |/apps/app                              |
+                                                                   |                     (data)            |
+                                                                   |      [controller] <---------> [model] |
+                                                                   |             |                         |
+                                                                   |             |  (data)                 |
+                                                                   |              ----------> [view]       |
+                                                                   |_______________________________________|
 
 There are only 3 directories
 - apps *(your all apps)*
