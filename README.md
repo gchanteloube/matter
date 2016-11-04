@@ -13,18 +13,22 @@ Architecture
                     (master app)              _______________________
                           |                  |                       |
                           |                  |                       |
-    http://your-project/[app][.method] ====> |     MATTER KERNEL     | -----> [Load app]
-                                             |                       |             |
-                                             |_______________________|             |
-                                                                                   |
-                                                                                   |
-                    __________________________________________                     |
-                   |/apps/app                                 |                    |
-                   |                                          |                    |
-                   | ---> [controller[.method]] ----> [model] |     (master app)   |
-                   |                |                         | <------------------
-                   |                 ---> [view]              |
-                   |__________________________________________|
+    http://your-project/[app][.method] ====> |     MATTER KERNEL     | ===> Render 
+                                             |                       |
+                                             |_______________________|  
+                                                        ^
+                                                        |
+                                                        |
+                                                         ---> [template] -----> [load template app]
+                                                                  |
+         __________________________________________               |
+        |/apps/[app]                               |       (load master app)
+        |                                          |              |
+        | ---> [controller[.method]] ----> [model] |              |
+        |                |                         | <------------
+        |                 ---> [view]              |
+        |__________________________________________|
+
 
 There are only 3 directories
 - apps *(your all apps)*
