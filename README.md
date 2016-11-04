@@ -30,8 +30,9 @@ Architecture
         |__________________________________________|
 
 **First step**
-1. Build your template
-    struct/templates/yourTemplate.html
+1. **Build your template**
+struct/templates/yourTemplate.html
+It's a simple html file, with key tag for load your apps in specific place.
 
 Build an app
 ------------
