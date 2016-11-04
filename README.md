@@ -45,7 +45,7 @@ Below, some frequently usages:
 $mdl = $this->mdl('MyModel');
 $mdl->YourMethod();
 ```
-
+*s*
 
 >**Use your view:**
 ```php
