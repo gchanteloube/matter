@@ -70,7 +70,7 @@ $this->view('MyView')->json();
 
 &nbsp;
 
->You can pipe these method:
+>You can pipe these methods:
 ```php
 $this->view('MyView')->data(array('MyData' => $myData))->json();
 ```
@@ -82,19 +82,27 @@ View
 View is the html render of your app. You have to define "_default" method for 
 return the html.
 
-Add html:
+**Below, some frequently usages:**
+
+>Add html:
 ```php
 $this->html('
     My first app :)
 ');
 ```
-Use data from controller:
+
+&nbsp;
+
+>Use data from controller:
 ```php
 $this->html('
     There is a data from controller: ' . $this->d('MyData') . '
 ');
 ```
-Add css or js resources:
+
+&nbsp;
+
+>Add css or js resources:
 ```php
 $this->css('header.css');
 $this->js('header.js');
@@ -103,7 +111,7 @@ $this->js('header.js');
 js('header.js\[myMethod\]). For not autoload your js, just add "~" character behind 
 your file name.*
 
-Define meta data *(page title, description, image, etc.)*:
+>Define meta data *(page title, description, image, etc.)*:
 ```php
 $this->title('MyTitle')->description('MyDescription')->image('myImage.png');
 ```
