@@ -111,6 +111,8 @@ $this->js('header.js');
 js('header.js\[myMethod\]). For not autoload your js, just add "~" character behind 
 your file name.*
 
+&nbsp;
+
 >Define meta data *(page title, description, image, etc.)*:
 ```php
 $this->title('MyTitle')->description('MyDescription')->image('myImage.png');
