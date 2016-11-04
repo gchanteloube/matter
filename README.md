@@ -49,7 +49,7 @@ $mdl->YourMethod();
 &nbsp;fdhfdhf
 fdhfdh
 
->Use your view:
+>**Use your view:**
 ```php
 return $this->view('MyView');
 ```
