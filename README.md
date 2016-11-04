@@ -41,7 +41,7 @@ called.
 
 **Below, some frequently usages:**
 
->Use your model:
+>**Use your model:**
 ```php
 $mdl = $this->mdl('MyModel');
 $mdl->YourMethod();
