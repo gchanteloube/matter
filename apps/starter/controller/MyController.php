@@ -13,8 +13,9 @@ class MyController extends \Matter\IController {
         $pouet = 'Ma bite';
 
         $mdl = $this->mdl('MyModel');
-        $return = $mdl->toto();
-        return $this->view('MyView')->data(array('pouet' => $pouet, 'pouet3' => $return));
+        $users = $mdl->users();
+
+        return $this->view('MyView')->data(array('users' => $users));
     }
 
     public function test () {

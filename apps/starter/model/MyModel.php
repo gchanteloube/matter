@@ -8,10 +8,11 @@ namespace Model;
  * @author guich
  */
 class MyModel extends \Matter\IModel {
-    public function toto () {
+    public function users () {
         $result = $this->db('master')->query('Select * from user_epicier')->execute();
-        $result = $this->db('second')->query('Select * from ps_access')->execute();
-        return 'titi';
+        //$result = $this->db('second')->query('Select * from ps_access')->execute();
+
+        return $result;
     }
 }
 

@@ -41,10 +41,10 @@ class Db {
         if (Utils::valid($db)) {
             switch ($this->type) {
                 case 'postgres':
-                    Postgres::execute($db, $this->queries);
+                    return Postgres::execute($db, $this->queries);
                     break;
                 case 'mysql':
-                    Mysql::execute($db, $this->queries);
+                    return Mysql::execute($db, $this->queries);
                     break;
             }
         } else {
