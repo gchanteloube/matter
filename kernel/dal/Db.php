@@ -24,15 +24,25 @@ class Db {
             $this->name = $database['name_db'];
             $this->user = $database['user_db'];
             $this->passwd = $database['passwd_db'];
-            if ($database['type_db'] == 'postgres') Utils::valid($database['port_db']) ? $this->port = $database['port_db'] : $this->port = 5432;
-            if ($database['type_db'] == 'mysql') Utils::valid($database['port_db']) ? $this->port = $database['port_db'] : $this->port = 3306;
+            if ($database['type_db'] == 'postgres') (array_key_exists('port_db', $database) && Utils::valid($database['port_db'])) ? $this->port = $database['port_db'] : $this->port = 5432;
+            if ($database['type_db'] == 'mysql') (array_key_exists('port_db', $database) && Utils::valid($database['port_db'])) ? $this->port = $database['port_db'] : $this->port = 3306;
         } else {
             throw new \Exception('Your database information were wrong. Check your "database.ini" file please.');
         }
     }
 
-    public function query ($query) {
-        array_push($this->queries, $query);
+    public function query ($query, $parameters) {
+        $db = $this->connect();
+        $queryBinded = null;
+        switch ($this->type) {
+            case 'postgres':
+                $queryBinded = Postgres::args($db, $query, array_slice(func_get_args(), 1));
+                break;
+            case 'mysql':
+                $queryBinded = Mysql::args($db, $query, array_slice(func_get_args(), 1));
+                break;
+        }
+        array_push($this->queries, $queryBinded);
         return $this;
     }
 

@@ -37,4 +37,16 @@ class Postgres {
         if (Utils::valid($db)) return $db;
         else throw new \Exception('Could not connect to database, check your "database.ini" file please.');
     }
+
+    public static function args($db, $query, $args) {
+        $patterns = array();
+        $replace = array();
+
+        for ($i = count($args); $i > 0; $i--) {
+            $patterns[] = '/@' . $i . '/';
+            array_push($replace, pg_escape_string($db, $args[$i - 1]));
+        }
+
+        return preg_replace($patterns, $replace, $query);
+    }
 }
