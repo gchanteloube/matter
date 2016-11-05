@@ -119,6 +119,8 @@ View
 View is the html render of your app. You have to define "_default" method for 
 return the html.
 
+&nbsp;
+
 **Below, some frequently usages:**
 
 >Add html:
@@ -154,6 +156,8 @@ character behind your file name.*
 $this->title('MyTitle')->description('MyDescription')->image('myImage.png');
 ```
 *Used for SEO and social posts*
+
+&nbsp;
 
 Model
 ----
@@ -217,6 +221,8 @@ execute() method return an array for each query.*
 $db = $this->db('database_alias')->query('Update table1 set [...]')->query('Update table2 set [...]')->execute();
 ```
 
+&nbsp;
+
 Utils
 -----
 You can defined much utils class you want, in struct/dependency/utils/ directory. They are autoloaded and you can use 
@@ -225,6 +231,8 @@ directly, every where.
 ```php
 $data = _u('method', $myData, $otherData, etc.);
 ```
+
+&nbsp;
 
 i18n
 ----
