@@ -2,11 +2,15 @@ MATTER FRAMEWORK
 ================
 *Keep your mind*
 
+&nbsp;
+
 Install
 -------
 - Just download source (soon on github!).
 - Unzip in your web server
 - Goto on localhost/matter/
+
+&nbsp;
 
 Architecture
 ------------
@@ -31,6 +35,8 @@ Architecture
         |__________________________________________|
 
 
+&nbsp;
+
 First step
 ----------
 1. **Build your template**. Your templates are all in struct/templates/ directory.
@@ -38,6 +44,8 @@ A template it's a simple html file, with key tag {{app[.method]}} for load your 
 Your master app will loaded with {{current}} key tag, wherever you want.
 2. **Build your app**. All details are below. Your app is declared in struct/apps.xml file.
 3. **Develop your app**. Make your business code in your MVC app.
+
+&nbsp;
 
 Build an app
 ------------
@@ -58,11 +66,15 @@ Your app directory is created, with 4 subdirectories:
 By default, this files (and class name), were created with the same name that your 
 app. But you are free for the naming.
 
+&nbsp;
+
 Controller
 ----------
 Controller is the entry door for your app. You can call it with specific method 
 *(section: Call your app)*, but without method it's "_default()" method which will 
 called.
+
+&nbsp;
 
 **Below, some frequently usages:**
 
@@ -99,6 +111,8 @@ $this->view('MyView')->json();
 ```php
 $this->view('MyView')->data(array('MyData' => $myData))->json();
 ```
+
+&nbsp;
 
 View
 ----
