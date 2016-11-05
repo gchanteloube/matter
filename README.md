@@ -144,10 +144,11 @@ $this->title('MyTitle')->description('MyDescription')->image('myImage.png');
 Model
 ----
 Model is the keeper of your data. Mostly, is the way to your database. You can collect all relevant data  to your 
-controller. For use a specific database, you just have to declare it in conf/database.ini file.
+controller. Your query and all your parameters are protected by your SGBD method. Transaction concept is used. For use 
+a specific database, you just have to declare it in conf/database.ini file. 
 >Declare a database:
 ```php
-[your_database_identifier]
+[database_alias]
 type_db = "postgres"
 host_db = "8.8.8.8"
 port_db = "5432"
@@ -155,16 +156,49 @@ name_db = "my_database"
 user_db = "my_user"
 passwd_db = "my_password"
 ```
-
-You can use it directly!
+*You can print database error with turn on "db_error" in conf/environment.ini file.*
 
 **Below, some frequently usages:**
 
->Add html:
+>Get a database connection:
 ```php
-$this->html('
-    My first app :)
-');
+$db = $this->db('database_alias');
+```
+
+&nbsp;
+
+>Build a query (with parameters):
+```php
+$db = $this->db('database_alias');
+$db->query('Select * from table where field1 = @1 and field2 = @2', $val1, $val2);
+```
+
+&nbsp;
+
+>Execute your query:
+```php
+$db = $this->db('database_alias');
+$db->query('Select * from table where field1 = @1 and field2 = @2', $val1, $val2);
+$db->execute();
+```
+
+&nbsp;
+
+>Multi queries:
+```php
+$db = $this->db('database_alias');
+$db->query('Update table1 set [...]');
+$db->query('Update table2 set [...]');
+$db->execute();
+```
+*All query are in specific transaction SQL. If one of them crash, all query will be cancel. If all queries passed, 
+execute() method return an array for each query.*
+
+&nbsp;
+
+>You can pipe these methods:
+```php
+$db = $this->db('database_alias')->query('Update table1 set [...]')->query('Update table2 set [...]')->execute();
 ```
 
 Utils
