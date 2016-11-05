@@ -5,6 +5,7 @@ require_once 'dependency/composer/vendor/autoload.php';
 require_once 'dependency/Utils.php';
 \Matter\Utils::loader('interfaces');
 \Matter\Utils::loader('business');
+\Matter\Utils::loader('dal');
 \Matter\Utils::loader('../struct/dependency/business');
 \Matter\Utils::loader('../struct/dependency/composer');
 \Matter\Utils::loader('../struct/dependency/utils');

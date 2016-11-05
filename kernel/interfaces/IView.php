@@ -1,7 +1,6 @@
 <?php
 
 namespace Matter;
-use MatthiasMullie\Minify\Minify;
 
 /**
  * Description of IView

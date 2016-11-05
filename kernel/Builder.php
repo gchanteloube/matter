@@ -91,7 +91,7 @@ class Builder {
         $kernel = Conversation::init('KERNEL');
 
         // Master meta
-        $meta = '<base href="' . Utils::getEnvironment()['path'] . '"><!--[if lte IE 6]></base><![endif]-->';
+        $meta = '<base href="' . Utils::getEnvironment()['site'] . '"><!--[if lte IE 6]></base><![endif]-->';
         if (Utils::valid($kernel->get('title_mr'))) $meta .= '<title>' . $kernel->get('title_mr') . '</title>';
         else if (Utils::valid($this->title)) $meta .= '<title>' . $this->title . '</title>';
         if (Utils::valid($kernel->get('desc_mr'))) $meta .= '<meta name="description" content="' . $kernel->get('desc_mr') . '">';
@@ -99,17 +99,20 @@ class Builder {
         if (Utils::valid($kernel->get('fav_mr'))) $meta .= '<link rel="icon" type="image/png" href="' . $kernel->get('fav_mr') . '" />';
         else if (Utils::valid($this->favicon)) $meta .= '<link rel="icon" type="image/png" href="' . $this->favicon . '" />';
 
+        $social_ini = parse_ini_file("../conf/social.ini", true);
+        $general = $social_ini['general'];
+
         // FB meta
-        $social_ini = parse_ini_file("../conf/social.ini");
-        Utils::valid($social_ini['fb_app_id']) ? $meta .= '<meta property="fb:app_id" content="' . $social_ini['fb_app_id'] . '">' : false;
-        Utils::valid($social_ini['fb_page_id']) ? $meta .= '<meta property="fb:page_id" content="' . $social_ini['fb_page_id'] . '">' : false;
-        Utils::valid($social_ini['site_name']) ? $meta .= '<meta property="og:site_name" content="' . $social_ini['site_name'] . '">' : false;
+        $facebook = $social_ini['facebook'];
+        Utils::valid($facebook['fb_app_id']) ? $meta .= '<meta property="fb:app_id" content="' . $facebook['fb_app_id'] . '">' : false;
+        Utils::valid($facebook['fb_page_id']) ? $meta .= '<meta property="fb:page_id" content="' . $facebook['fb_page_id'] . '">' : false;
+        Utils::valid($general['site_name']) ? $meta .= '<meta property="og:site_name" content="' . $general['site_name'] . '">' : false;
         if (Utils::valid($kernel->get('title_mr'))) $meta .= '<meta property="og:title" content="' . $kernel->get('title_mr') . '">';
-        else if (Utils::valid($social_ini['title'])) $meta .= '<meta property="og:title" content="' . $social_ini['title'] . '">';
+        else if (Utils::valid($general['title'])) $meta .= '<meta property="og:title" content="' . $general['title'] . '">';
         if (Utils::valid($kernel->get('desc_mr'))) $meta .= '<meta property="og:description" content="' . $kernel->get('desc_mr') . '">';
-        else if (Utils::valid($social_ini['description'])) $meta .= '<meta property="og:description" content="' . $social_ini['description'] . '">';
+        else if (Utils::valid($general['description'])) $meta .= '<meta property="og:description" content="' . $general['description'] . '">';
         if (Utils::valid($kernel->get('image_mr'))) $meta .= '<meta property="og:image" content="' . $kernel->get('image_mr') . '">';
-        else if (Utils::valid($social_ini['image'])) $meta .= '<meta property="og:image" content="' . $social_ini['image'] . '">';
+        else if (Utils::valid($general['image'])) $meta .= '<meta property="og:image" content="' . $general['image'] . '">';
         $meta .= '<meta property="og:url" content="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" />';
         $meta .= '<meta property="og:image:width" content="644" />';
         $meta .= '<meta property="og:image:height" content="322" />';
@@ -120,14 +123,14 @@ class Builder {
 
         // Twitter meta
         $meta .= '<meta name="twitter:card" content="summary_large_image">';
-        Utils::valid($social_ini['site_name']) ? $meta .= '<meta property="twitter:site_name" content="' . $social_ini['site_name'] . '">' : false;
+        Utils::valid($general['site_name']) ? $meta .= '<meta property="twitter:site_name" content="' . $general['site_name'] . '">' : false;
         $meta .= '<meta property="twitter:url" content="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" />';
         if (Utils::valid($kernel->get('title_mr'))) $meta .= '<meta property="twitter:title" content="' . $kernel->get('title_mr') . '">';
-        else if (Utils::valid($social_ini['title'])) $meta .= '<meta property="twitter:title" content="' . $social_ini['title'] . '">';
+        else if (Utils::valid($general['title'])) $meta .= '<meta property="twitter:title" content="' . $general['title'] . '">';
         if (Utils::valid($kernel->get('desc_mr'))) $meta .= '<meta property="twitter:description" content="' . $kernel->get('desc_mr') . '">';
-        else if (Utils::valid($social_ini['description'])) $meta .= '<meta property="twitter:description" content="' . $social_ini['description'] . '">';
+        else if (Utils::valid($general['description'])) $meta .= '<meta property="twitter:description" content="' . $general['description'] . '">';
         if (Utils::valid($kernel->get('image_mr'))) $meta .= '<meta property="twitter:image" content="' . $kernel->get('image_mr') . '">';
-        else if (Utils::valid($social_ini['image'])) $meta .= '<meta property="twitter:image" content="' . $social_ini['image'] . '">';
+        else if (Utils::valid($general['image'])) $meta .= '<meta property="twitter:image" content="' . $general['image'] . '">';
 
         return $meta;
     }

@@ -32,10 +32,9 @@ class Utils {
     }
 
     public static function getEnvironment () {
-        $environment_ini = parse_ini_file("../conf/environment.ini");
-        $environment = $environment_ini['current'];
-        $path = $environment_ini[$environment_ini['current']];
-        return array('environment' => $environment, 'path' => $path);
+        $environment_ini = parse_ini_file("../conf/environment.ini", true);
+        $environment = $environment_ini['current_environment']['environment'];
+        return $environment_ini[$environment];
     }
 }
 
