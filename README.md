@@ -100,8 +100,6 @@ $this->view('MyView')->json();
 $this->view('MyView')->data(array('MyData' => $myData))->json();
 ```
 
-&nbsp;
-
 View
 ----
 View is the html render of your app. You have to define "_default" method for 
@@ -143,6 +141,31 @@ $this->title('MyTitle')->description('MyDescription')->image('myImage.png');
 ```
 *Used for SEO and social posts*
 
+Model
+----
+Model is the keeper of your data. Mostly, is the way to your database. You can collect all relevant data  to your 
+controller. For use a specific database, you just have to declare it in conf/database.ini file.
+>Declare a database:
+```php
+[your_database_identifier]
+type_db = "postgres"
+host_db = "8.8.8.8"
+port_db = "5432"
+name_db = "my_database"
+user_db = "my_user"
+passwd_db = "my_password"
+```
+
+You can use it directly!
+**Below, some frequently usages:**
+
+>Add html:
+```php
+$this->html('
+    My first app :)
+');
+```
+
 Utils
 -----
 You can defined much utils class you want, in struct/dependency/utils/ directory. They are autoloaded and you can use 
@@ -151,10 +174,6 @@ directly, every where.
 ```php
 $data = _u('method', $myData, $otherData, etc.);
 ```
-
-Database
---------
-TODO
 
 i18n
 ----
