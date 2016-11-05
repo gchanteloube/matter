@@ -163,7 +163,8 @@ Model
 ----
 Model is the keeper of your data. Mostly, is the way to your database. You can collect all relevant data  to your 
 controller. Your query and all your parameters are protected by your SGBD method. Transaction concept is used. For use 
-a specific database, you just have to declare it in conf/database.ini file. 
+a specific database, you just have to declare it in conf/database.ini file. You can use a postgreSQL or mySQL database, 
+just change "type_db" in this file.
 >Declare a database:
 ```php
 [database_alias]
@@ -218,7 +219,7 @@ execute() method return an array for each query.*
 
 >You can pipe these methods:
 ```php
-$db = $this->db('database_alias')->query('Update table1 set [...]')->query('Update table2 set [...]')->execute();
+$db = $this->db('database_alias')->query('Select * from table')->execute();
 ```
 
 &nbsp;
