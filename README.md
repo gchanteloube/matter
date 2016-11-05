@@ -158,6 +158,7 @@ passwd_db = "my_password"
 ```
 *You can print database error with turn on "db_error" in conf/environment.ini file.*
 
+
 **Below, some frequently usages:**
 
 >Get a database connection:
