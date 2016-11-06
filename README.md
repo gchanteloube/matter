@@ -277,7 +277,7 @@ $data = _u('method', $myData, $otherData, etc.);
 i18n
 ----
 You can internationalize your web site. In each app, you have a directory assets/i18n where are your locale files. 
-You have to define your locale file and with only change your url (https://mywebsite.com/fr_FR) your web site will be 
+You have to define your locale file and with only change your url (https://your-project/fr_FR) your web site will be 
 translated.
 
 &nbsp;
