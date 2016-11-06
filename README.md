@@ -18,7 +18,7 @@ Architecture
                     (master app)              _______________________
                           |                  |                       |
                           |                  |                       |
-    https://your-project/[app][.method] ====> |     MATTER KERNEL     | ====> Render 
+    https://your-project/[app][.method] ===> |     MATTER KERNEL     | ===> Render 
                                              |                       |
                                              |_______________________|  
                                                         ^
