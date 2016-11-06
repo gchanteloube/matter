@@ -26,29 +26,9 @@ if (\Matter\Utils::valid($action)) {
         try {
             echo $builder->friends();
         } catch (\Exception $e) {
-            echo addException($e);
+            echo \Matter\Exception::addException($e);
         }
     }
-}
-
-function addException (\Exception $e) {
-    return '
-        Matter return join exceptions:<br />
-        <ul>
-            <li>' . $e->getMessage() . '</li>
-            <li>' . getTrace($e) . '</li>
-        </ul>
-    ';
-}
-
-function getTrace (\Exception $e) {
-    $trace = '';
-    foreach ($e->getTrace() as $t) {
-        $file = explode('/', $t['file']); $file = $file[count($file) - 1];
-        $trace .= $file . ' (l. ' . $t['line'] . ') <-- ';
-    }
-
-    return $trace;
 }
 
 function _u($method, $parameters) {
