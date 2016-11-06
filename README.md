@@ -251,12 +251,12 @@ or parameter method*
 
 &nbsp;
 
-With this way, all template will be loaded. If you need only load your master app (without all template), for example 
+With this way, all template will be loaded. If you need only load your master app (without all template apps), for example 
 for a JSON return or an Ajax call, you can use S/ tag at beginning url of the url:
 
 &nbsp;
 
->App only (Ajax, JSON, etc.):
+>Call alone app (Ajax, JSON, etc.):
 ```php
 https://your-project/S/[app][.method]
 ```
