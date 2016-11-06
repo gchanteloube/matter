@@ -87,6 +87,10 @@ abstract class IView {
         return $this;
     }
 
+    protected function i($entity, $parameters = null) {
+        return I18n::translate($this->context, $entity, $parameters);
+    }
+
     public function _this() {
         return get_object_vars($this);
     }

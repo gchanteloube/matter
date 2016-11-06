@@ -10,7 +10,8 @@ namespace View;
 class MyView extends \Matter\IView {
     public function _default () {
         $this->html('
-            Voici les données envoyées :
+            ' . $this->i('welcome', 'www.clozly.com') . ' :
+            fhdfghdf fdhgdfg<br />fhtrt ' . $this->i('text') . '
         ');
 
         foreach ($this->d('users') as $user) {
