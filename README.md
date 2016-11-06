@@ -132,6 +132,16 @@ $this->html('
 
 &nbsp;
 
+>Internationalization:
+```php
+$this->html('
+    <label>' . $this->i('welcome', $firstname) . '</label>
+');
+```
+*For more details, read i18n section*
+
+&nbsp;
+
 >Use data from controller:
 ```php
 $this->html('
@@ -237,4 +247,27 @@ $data = _u('method', $myData, $otherData, etc.);
 
 i18n
 ----
-TODO
+You can internationalize your web site. In each app, you have a directory assets/i18n where are your locale files. 
+You have to define your locale file and with only change your url (http://mywebsite.com/fr_FR) your web site will be 
+translated.
+
+&nbsp;
+
+>Define your "fr_FR" locale:
+```php
+welcome = "Bienvenue sur mon site web"
+birthday = "Vous êtes né le @1"
+```
+*Your locale is in each app assets/i18n/fr_FR.ini*
+
+&nbsp;
+
+>Use your "fr_FR" locale:
+```php
+$this->html('
+    <h1>' . $this->i('welcome') . '</h1>
+    ' . $this->i('birthday', $date) . '
+');
+```
+*http://mywebsite.com/fr_FR/welcome*
+
