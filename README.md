@@ -258,7 +258,7 @@ translated.
 welcome = "Bienvenue sur mon site web"
 birthday = "Vous êtes né le @1"
 ```
-*Your locale is in each app assets/i18n/fr_FR.ini*
+*Path : app/myapp/assets/i18n/fr_FR.ini*
 
 &nbsp;
 
