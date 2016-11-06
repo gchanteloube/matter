@@ -20,7 +20,7 @@ class MyController extends \Matter\IController {
 
     public function test () {
         $view = $this->view('MyView');
-        $view->data(array('pouet3' => 'poney'));
+        $view->data(array('users' => array('poney', 'coeur', 'coeur')));
 
         return $view;
     }

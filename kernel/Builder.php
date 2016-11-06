@@ -96,8 +96,8 @@ class Builder {
         else if (Utils::valid($this->title)) $meta .= '<title>' . $this->title . '</title>';
         if (Utils::valid($kernel->get('desc_mr'))) $meta .= '<meta name="description" content="' . $kernel->get('desc_mr') . '">';
         else if (Utils::valid($this->description)) $meta .= '<meta name="description" content="' . $this->description . '">';
-        if (Utils::valid($kernel->get('fav_mr'))) $meta .= '<link rel="icon" type="image/png" href="' . $kernel->get('fav_mr') . '" />';
-        else if (Utils::valid($this->favicon)) $meta .= '<link rel="icon" type="image/png" href="' . $this->favicon . '" />';
+        if (Utils::valid($kernel->get('fav_mr'))) $meta .= '<link rel="icon" type="image/png" href="struct/assets/img/' . $kernel->get('fav_mr') . '" />';
+        else if (Utils::valid($this->favicon)) $meta .= '<link rel="icon" type="image/png" href="struct/assets/img/' . $this->favicon . '" />';
 
         $social_ini = parse_ini_file("../conf/social.ini", true);
         $general = $social_ini['general'];

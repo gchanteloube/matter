@@ -3,13 +3,16 @@ RewriteEngine On
 
 Options -Indexes
 
+RewriteCond %{ENV:REDIRECT_STATUS} !^[\s/]*$
+RewriteRule ^ - [L]
+
 RewriteRule ^$ kernel/door.php?a_mr=starter [L]
-RewriteRule ^S/([a0-z9_]*)\.([a0-z9_]*)$ kernel/door.php?a_mr=$1&s_mr=true&m_mr=$2 [QSA,L]
-RewriteRule ^S/([a0-z9_]*)$ kernel/door.php?a_mr=$1&s_mr=true [QSA,L]
+RewriteRule ^S/([a0-z9_]+)\.([a0-z9_]+)$ kernel/door.php?a_mr=$1&s_mr=true&m_mr=$2 [QSA,L]
+RewriteRule ^S/([a0-z9_]+)$ kernel/door.php?a_mr=$1&s_mr=true [QSA,L]
 
 # /locale/app.method
-RewriteRule ^([A-Za-z_]*)/([a0-z9_]*)\.([a0-z9_]*)$ kernel/door.php?l_mr=$1&a_mr=$2&m_mr=$3 [QSA,L]
-RewriteRule ^([A-Za-z_]*)/([a0-z9_]*) kernel/door.php?l_mr=$1&a_mr=$2 [QSA,L]
+RewriteRule ^([A-Za-z_]+)/([a0-z9_]+)\.([a0-z9_]+)$ kernel/door.php?l_mr=$1&a_mr=$2&m_mr=$3 [QSA,L]
+RewriteRule ^([A-Za-z_]+)/([a0-z9_]+)$ kernel/door.php?l_mr=$1&a_mr=$2 [QSA,L]
 # /app.method
-RewriteRule ^([a0-z9_]*)\.([a0-z9_]*)$ kernel/door.php?a_mr=$1&m_mr=$2 [QSA,L]
-RewriteRule ^([a0-z9_]*)$ kernel/door.php?a_mr=$1 [QSA,L]
+RewriteRule ^([a0-z9_]+)\.([a0-z9_]+)$ kernel/door.php?a_mr=$1&m_mr=$2 [QSA,L]
+RewriteRule ^([a0-z9_]+)$ kernel/door.php?a_mr=$1 [QSA,L]
