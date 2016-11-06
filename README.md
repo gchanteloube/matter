@@ -18,7 +18,7 @@ Architecture
                     (master app)              _______________________
                           |                  |                       |
                           |                  |                       |
-    http://your-project/[app][.method] ====> |     MATTER KERNEL     | ====> Render 
+    https://your-project/[app][.method] ====> |     MATTER KERNEL     | ====> Render 
                                              |                       |
                                              |_______________________|  
                                                         ^
@@ -234,6 +234,35 @@ $db = $this->db('database_alias')->query('Select * from table')->execute();
 
 &nbsp;
 
+Call your app
+-------------
+Now you can call your beautiful app :) As a reminder, a page of matter have one master app, named {{current}} in your 
+template, and others app (for example header, menu, connection, etc.), loaded too in your template with {{app[.method]}}. 
+For call your page, one path url : 
+
+&nbsp;
+
+>Path url for call app:
+```php
+https://your-project/[app][.method]
+```
+*Then, all linked app will be loaded, and your master app will be called through _default() method in your controller, 
+or parameter method*
+
+&nbsp;
+
+With this way, all template will be loaded. If you need only load your master app (without all template), for example 
+for a JSON return or an Ajax call, you can use S/ tag at beginning url of the url:
+
+&nbsp;
+
+>App only (Ajax, JSON, etc.):
+```php
+https://your-project/S/[app][.method]
+```
+
+&nbsp;
+
 Utils
 -----
 You can defined much utils class you want, in struct/dependency/utils/ directory. They are autoloaded and you can use 
@@ -248,7 +277,7 @@ $data = _u('method', $myData, $otherData, etc.);
 i18n
 ----
 You can internationalize your web site. In each app, you have a directory assets/i18n where are your locale files. 
-You have to define your locale file and with only change your url (http://mywebsite.com/fr_FR) your web site will be 
+You have to define your locale file and with only change your url (https://mywebsite.com/fr_FR) your web site will be 
 translated.
 
 &nbsp;
@@ -269,5 +298,5 @@ $this->html('
     ' . $this->i('birthday', $date) . '
 ');
 ```
-*http://mywebsite.com/fr_FR/welcome*
+*https://your-project/fr_FR/welcome*
 

@@ -19,10 +19,12 @@ class MyController extends \Matter\IController {
     }
 
     public function test () {
-        $view = $this->view('MyView');
-        $view->data(array('users' => array('poney', 'coeur', 'coeur')));
+        $pouet = 'Ma bite';
 
-        return $view;
+        $mdl = $this->mdl('MyModel');
+        $users = $mdl->users();
+
+        return $this->view('MyView')->data(array('users' => $users));
     }
 }
 ?>
