@@ -15,6 +15,7 @@ class Mysql {
         mysqli_query($db, 'set autocommit =0');
         mysqli_query($db, 'start transaction');
 
+        $queriesData = array();
         foreach ($queries as $query) {
             $mq = @mysqli_query($db, $query);
             if (Utils::valid($mq)) {
@@ -23,7 +24,7 @@ class Mysql {
                 while ($r = $mq->fetch_assoc()) {
                     array_push($data, $r);
                 }
-                return $data;
+                array_push($queriesData, $data);
             } else {
                 $environment = Utils::getEnvironment();
                 $e = 'Your query is wrong';
@@ -35,6 +36,9 @@ class Mysql {
         // Close transaction
         mysqli_query($db, 'commit');
         mysqli_close($db);
+
+        if (count($queriesData) > 1) return $queriesData;
+        else return $queriesData[0];
     }
 
     public static function connect ($host, $user, $passwd, $name, $port) {

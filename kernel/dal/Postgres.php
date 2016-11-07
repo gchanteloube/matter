@@ -14,10 +14,11 @@ class Postgres {
         // Open transaction
         pg_query($db, 'begin');
 
+        $queriesData = array();
         foreach ($queries as $query) {
             $pgq = @pg_query($db, $query);
             if (Utils::valid($pgq)) {
-                return pg_fetch_all($pgq);
+                array_push($queriesData, pg_fetch_all($pgq));
             } else {
                 $environment = Utils::getEnvironment();
                 $e = 'Your query is wrong';
@@ -29,6 +30,9 @@ class Postgres {
         // Close transaction
         pg_query($db, 'commit');
         pg_close($db);
+
+        if (count($queriesData) > 1) return $queriesData;
+        else return $queriesData[0];
     }
 
     public static function connect ($host, $user, $passwd, $name, $port) {

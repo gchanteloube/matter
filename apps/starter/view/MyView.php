@@ -15,8 +15,8 @@ class MyView extends \Matter\IView {
         ');
 
         foreach ($this->d('users') as $user) {
-            //$this->html('- ' . $user[0] . '<br />');
-            $this->html('- ' . $user['id_profile'] . '<br />');
+            $this->html('- ' . $user['email'] . '<br />');
+            //$this->html('- ' . $user['id_profile'] . '<br />');
         }
 
         $this->title('toto')->description('Ma description')->image('image.png');
