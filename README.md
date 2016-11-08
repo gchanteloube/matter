@@ -52,31 +52,29 @@ Build an app with matter.phar
 Matter use independent app. An app is like a module, autonomous. It may be your
 footer, payment gateway or welcome container. Each app is based on MVC pattern.
 
-For create an app, use matter.phar
+&nbsp;
+
+>For create an app (or other), use matter.phar
 ```shell
 $> php matter.phar build:app appName
 ```
 
-&nbsp;
-
-For create an other view in specific app
+An other view in specific app
 ```shell
 $> php matter.phar build:view appName viewName
 ```
 
-&nbsp;
-
-For create an other model in specific app
+An other model in specific app
 ```shell
 $> php matter.phar build:model appName viewName
 ```
 
-&nbsp;
-
-For create an other controller in specific app
+An other controller in specific app
 ```shell
 $> php matter.phar build:controller appName viewName
 ```
+
+&nbsp;
 
 When your app is created, with your own controllers / models / views, you have an app directory is created, with 4 
 subdirectories:
@@ -84,6 +82,8 @@ subdirectories:
 - controller *(app controllers)*
 - model *(app models)*
 - view *(app views)*
+
+&nbsp;
 
 By default, these files (and class name), were created with the same name that your app. But you are free for the naming. 
 Your app is declared in apps.xml file, with below parameters:
