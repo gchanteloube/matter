@@ -8,7 +8,7 @@ Install
 -------
 - Just download the sources (soon on github!).
 - Unzip them in your web server
-- Go on localhost/matter/ and check if it\'s working
+- Go on localhost/matter/ and check if it's working
 
 &nbsp;
 
