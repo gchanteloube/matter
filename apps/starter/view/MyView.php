@@ -11,7 +11,7 @@ class MyView extends \Matter\IView {
     public function _default () {
         $this->html('
             ' . $this->i('welcome', 'www.clozly.com') . ' :
-            fhdfghdf fdhgdfg<br />fhtrt ' . $this->i('text') . '
+            fhdfghdf fdhgdfg<br />fhtrt ' . _u('dam', $this->i('text')) . '
         ');
 
         foreach ($this->d('users') as $user) {

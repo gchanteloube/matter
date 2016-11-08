@@ -1,6 +1,6 @@
 <?php
 
-class Unicorn {
+class Matter {
     private $action = null;
     private $args = null;
 

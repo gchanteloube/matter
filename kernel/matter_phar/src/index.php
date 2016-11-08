@@ -1,8 +1,8 @@
 <?php
 
-require_once "phar://unicorn.phar/common.php";
+require_once "phar://matter.phar/common.php";
 
-$u = new Unicorn($argv);
+$u = new Matter($argv);
 $u->launch();
 
 // Command line
