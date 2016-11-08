@@ -69,7 +69,7 @@ Your app is declared in apps.xml file, with below parameters:
 - <template>master</template> *Template used*
 - <name>starter</name> *App name*
 - <controller>MyController</controller> *Controller to call*
-- [<title>Your page title</title>] *Page title (optional)*
+- [&lt;title>Your page title</title>] *Page title (optional)*
 - [<description>Your page description</description>] *Page description (optional)*
 - [<favicon>favicon.ico</favicon>] *Page favicon (optional)*
 
