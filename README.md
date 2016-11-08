@@ -47,24 +47,45 @@ Your master app will loaded with {{current}} key tag, wherever you want.
 
 &nbsp;
 
-Build an app
-------------
+Build an app with matter.phar
+-----------------------------
 Matter use independent app. An app is like a module, autonomous. It may be your
 footer, payment gateway or welcome container. Each app is based on MVC pattern.
 
 For create an app, use matter.phar
 ```shell
-$> php matter.phar app:create Welcome
+$> php matter.phar build:app appName
 ```
 
-Your app directory is created, with 4 subdirectories:
+&nbsp;
+
+For create an other view in specific app
+```shell
+$> php matter.phar build:view appName viewName
+```
+
+&nbsp;
+
+For create an other model in specific app
+```shell
+$> php matter.phar build:model appName viewName
+```
+
+&nbsp;
+
+For create an other controller in specific app
+```shell
+$> php matter.phar build:controller appName viewName
+```
+
+When your app is created, with your own controllers / models / views, you have an app directory is created, with 4 
+subdirectories:
 - assets *(all app resources)*
 - controller *(app controllers)*
 - model *(app models)*
 - view *(app views)*
 
-By default, this files (and class name), were created with the same name that your 
-app. But you are free for the naming.
+By default, these files (and class name), were created with the same name that your app. But you are free for the naming. 
 Your app is declared in apps.xml file, with below parameters:
 - &lt;template&gt;master&lt;/template&gt; *Template used*
 - &lt;name&gt;starter&lt;/name&gt; *App name*
@@ -72,6 +93,7 @@ Your app is declared in apps.xml file, with below parameters:
 - [&lt;title&gt;Your page title&lt;/title&gt;] *Page title (optional)*
 - [&lt;description&gt;Your page description&lt;/description&gt;] *Page description (optional)*
 - [&lt;favicon&gt;favicon.ico&lt;/favicon&gt;] *Page favicon (optional)*
+*Feel free for update this data, for link it to your project.*
 
 &nbsp;
 
