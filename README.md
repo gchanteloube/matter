@@ -58,18 +58,15 @@ footer, payment gateway or welcome container. Each app is based on MVC pattern.
 ```shell
 $> php matter.phar build:app appName
 ```
-
-An other view in specific app
+>An other view in specific app
 ```shell
 $> php matter.phar build:view appName viewName
 ```
-
-An other model in specific app
+>An other model in specific app
 ```shell
 $> php matter.phar build:model appName viewName
 ```
-
-An other controller in specific app
+>An other controller in specific app
 ```shell
 $> php matter.phar build:controller appName viewName
 ```
