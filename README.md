@@ -50,9 +50,12 @@ Your master app will loaded with {{current}} key tag, wherever you want.
 Build an app with matter.phar
 -----------------------------
 Matter use independent app. An app is like a module, autonomous. It may be your
-footer, payment gateway or welcome container. Each app is based on MVC pattern.
+footer, payment gateway or welcome container. Each app is based on MVC pattern. Matter have an helper for make action 
+on these app, like create. You can use it!
 
 &nbsp;
+
+**Below, some frequently usages:**
 
 >For create an app (or other), use matter.phar
 ```shell
