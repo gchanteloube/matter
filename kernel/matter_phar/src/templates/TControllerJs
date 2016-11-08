@@ -2,7 +2,7 @@
 #ClassName# = function(){};
 #ClassName#.prototype = {
     yourMethod: function () {
-        // YOUR CODE
+        // YOUR CODE HERE
     },
 
     eventListeners: function () {

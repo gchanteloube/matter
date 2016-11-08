@@ -19,7 +19,7 @@ class Matter {
                 mkdir('apps/' . $appName);
 
                 // Declare app in app.xml
-                $file = fopen('kernel/conf/apps.xml', "r+");
+                $file = fopen('struct/apps.xml', "r+");
                 fseek($file, -11, SEEK_END);
                 $t = file_get_contents('TApps'); $t = str_replace('#ClassName#', $appName, $t);
                 fwrite($file, $t);
@@ -56,6 +56,8 @@ class Matter {
 
                 // Build assets
                 echo "+ Assets\n";
+                mkdir('apps/' . $appName . '/assets');
+                mkdir('apps/' . $appName . '/assets/img');
                 mkdir('apps/' . $appName . '/assets/css');
                 $file = fopen('apps/' . $appName . '/assets/css/' . $appName . '.css', 'a');
                 $t = file_get_contents('TViewCss'); $t = str_replace('#ClassName#', $appName, $t);
@@ -68,40 +70,51 @@ class Matter {
                 fclose($file);
                 mkdir('apps/' . $appName . '/assets/i18n');
                 $file = fopen('apps/' . $appName . '/assets/i18n/en.ini', 'a');
-                $t = file_get_contents('TLocale_en.ini');
+                $t = file_get_contents('TLocale_en');
                 fputs($file, $t);
                 fclose($file);
-                mkdir('apps/' . $appName . '/assets/img');
                 $file = fopen('apps/' . $appName . '/assets/i18n/fr_FR.ini', 'a');
-                $t = file_get_contents('TLocale_fr_FR.ini');
+                $t = file_get_contents('TLocale_fr_FR');
                 fputs($file, $t);
                 fclose($file);
 
                 echo "=> Your app is done! (https://your-project/$appName)\n";
                 break;
             case 'build:view':
-                $appName = ucfirst($this->args[1]);
-                $viewName = ucfirst($this->args[2]);
+                $appName = $this->args[1];
+                $viewName = $this->args[2];
                 echo "\nView [" . $viewName . "] building in App [" . $appName . "]...\n";
-                $file = fopen('Apps/' . $appName . '/Vues/' . $viewName . 'Vue.php', 'a');
+                $file = fopen('apps/' . $appName . '/view/' . $viewName . 'View.php', 'a');
                 $t = file_get_contents('TView'); $t = str_replace('#ClassName#', $viewName, $t);
                 fputs($file, $t);
                 fclose($file);
                 echo "+ View\n";
 
-                echo "=> Your view is done! Have to add it in your controller constructor for use it\n";
+                echo "=> Your view is done!\n";
                 break;
-            case 'build:modele':
-                $appName = ucfirst($this->args[1]);
-                $modeleName = ucfirst($this->args[2]);
-                echo "\nModele [" . $modeleName . "] building in App [" . $appName . "]...\n";
-                $file = fopen('Apps/' . $appName . '/Modeles/' . $modeleName . 'Mdl.php', 'a');
-                $t = file_get_contents('TView'); $t = str_replace('#ClassName#', $modeleName, $t);
+            case 'build:model':
+                $appName = $this->args[1];
+                $modelName = $this->args[2];
+                echo "\nModel [" . $modelName . "] building in App [" . $appName . "]...\n";
+                $file = fopen('apps/' . $appName . '/model/' . $modelName . 'Mdl.php', 'a');
+                $t = file_get_contents('TModel'); $t = str_replace('#ClassName#', $modelName, $t);
                 fputs($file, $t);
                 fclose($file);
-                echo "+ Modele\n";
+                echo "+ Model\n";
 
-                echo "=> Your modele is done! Have to add it in your controller constructor for use it\n";
+                echo "=> Your model is done!\n";
+                break;
+            case 'build:controller':
+                $appName = $this->args[1];
+                $controllerName = $this->args[2];
+                echo "\nController [" . $controllerName . "] building in App [" . $appName . "]...\n";
+                $file = fopen('apps/' . $appName . '/controller/' . $controllerName . 'Ctrl.php', 'a');
+                $t = file_get_contents('TController'); $t = str_replace('#ClassName#', $controllerName, $t);
+                fputs($file, $t);
+                fclose($file);
+                echo "+ Controller\n";
+
+                echo "=> Your controller is done!\n";
                 break;
         }
     }
