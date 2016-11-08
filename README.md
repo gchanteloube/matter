@@ -66,12 +66,12 @@ Your app directory is created, with 4 subdirectories:
 By default, this files (and class name), were created with the same name that your 
 app. But you are free for the naming.
 Your app is declared in apps.xml file, with below parameters:
-- <template>master</template> *Template used*
-- <name>starter</name> *App name*
-- <controller>MyController</controller> *Controller to call*
-- [&lt;title>Your page title</title>] *Page title (optional)*
-- [<description>Your page description</description>] *Page description (optional)*
-- [<favicon>favicon.ico</favicon>] *Page favicon (optional)*
+- &lt;template&gt;master&lt;/template&gt; *Template used*
+- &lt;name&gt;starter&lt;/name&gt; *App name*
+- &lt;controller&gt;MyController&lt;/controller> *Controller to call*
+- [&lt;title&gt;Your page title&lt;/title&gt;] *Page title (optional)*
+- [&lt;description&gt;Your page description&lt;/description&gt;] *Page description (optional)*
+- [&lt;favicon&gt;favicon.ico&lt;/favicon&gt;] *Page favicon (optional)*
 
 &nbsp;
 
