@@ -1,5 +1,7 @@
 <?php
 
+namespace Controller;
+
 /**
  * Class #ClassName#Ctrl
  * @author matter.phar
@@ -8,6 +10,7 @@
 class #ClassName#Ctrl extends \Matter\IController {
       public function _default () {
             // YOUR CODE HERE
+            return $this->view('#ClassName#View');
       }
 }
 ?>

@@ -1,10 +1,10 @@
 
 
-    <action name="#ClassName#">
+    <action name="#AppName#">
         <application>
             <template>master</template>
-            <name>starter</name>
-            <controller>MyController</controller>
+            <name>#AppName#</name>
+            <controller>#ClassName#Ctrl</controller>
         </application>
     </action>
 </actions>

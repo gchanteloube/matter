@@ -1,5 +1,7 @@
 <?php
 
+namespace View;
+
 /**
  * Class #ClassName#View
  * @author matter.phar
@@ -8,6 +10,7 @@
 class #ClassName#View extends \Matter\IView {
     public function _default () {
         // YOUR CODE HERE
+        $this->html('Hello world from #ClassName#View');
     }
 }
 

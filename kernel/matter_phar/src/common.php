@@ -21,36 +21,36 @@ class Matter {
                 // Declare app in app.xml
                 $file = fopen('struct/apps.xml', "r+");
                 fseek($file, -11, SEEK_END);
-                $t = file_get_contents('TApps'); $t = str_replace('#ClassName#', $appName, $t);
+                $t = file_get_contents('TApps');
+                $t = str_replace('#AppName#', $appName, $t);
+                $t = str_replace('#ClassName#', ucfirst($appName), $t);
                 fwrite($file, $t);
                 fclose($file);
 
                 // Build controller and directory
                 echo "+ Controller\n";
                 mkdir('apps/' . $appName . '/controller');
-                $file = fopen('apps/' . $appName . '/controller/' . $appName . 'Ctrl.php', 'a');
-                $t = file_get_contents('TController'); $t = str_replace('#ClassName#', $appName, $t);
+                $file = fopen('apps/' . $appName . '/controller/' . ucfirst($appName) . 'Ctrl.php', 'a');
+                $t = file_get_contents('TController');
+                $t = str_replace('#ClassName#', ucfirst($appName), $t);
                 fputs($file, $t);
                 fclose($file);
 
                 // Build modele and directory
                 echo "+ Model\n";
                 mkdir('apps/' . $appName . '/model');
-                $file = fopen('apps/' . $appName . '/model/' . $appName . 'Mdl.php', 'a');
-                $t = file_get_contents('TModel'); $t = str_replace('#ClassName#', $appName, $t);
+                $file = fopen('apps/' . $appName . '/model/' . ucfirst($appName) . 'Mdl.php', 'a');
+                $t = file_get_contents('TModel');
+                $t = str_replace('#ClassName#', ucfirst($appName), $t);
                 fputs($file, $t);
                 fclose($file);
 
                 // Build view and directory
                 echo "+ View\n";
-                mkdir('apps/' . $appName . '/View');
-                $file = fopen('apps/' . $appName . '/View/' . $appName . 'View.php', 'a');
-                $t = file_get_contents('TView'); $t = str_replace('#ClassName#', $appName, $t);
-                fputs($file, $t);
-                fclose($file);
-                mkdir('apps/' . $appName . '/View/Css');
-                $file = fopen('apps/' . $appName . '/View/Css/' . $appName . '.css', 'a');
-                $t = file_get_contents('TViewCss'); $t = str_replace('#ClassName#', $appName, $t);
+                mkdir('apps/' . $appName . '/view');
+                $file = fopen('apps/' . $appName . '/view/' . ucfirst($appName) . 'View.php', 'a');
+                $t = file_get_contents('TView');
+                $t = str_replace('#ClassName#', ucfirst($appName), $t);
                 fputs($file, $t);
                 fclose($file);
 
@@ -60,12 +60,14 @@ class Matter {
                 mkdir('apps/' . $appName . '/assets/img');
                 mkdir('apps/' . $appName . '/assets/css');
                 $file = fopen('apps/' . $appName . '/assets/css/' . $appName . '.css', 'a');
-                $t = file_get_contents('TViewCss'); $t = str_replace('#ClassName#', $appName, $t);
+                $t = file_get_contents('TCss');
+                $t = str_replace('#ClassName#', $appName, $t);
                 fputs($file, $t);
                 fclose($file);
                 mkdir('apps/' . $appName . '/assets/js');
                 $file = fopen('apps/' . $appName . '/assets/js/' . $appName . '.js', 'a');
-                $t = file_get_contents('TControllerJs'); $t = str_replace('#ClassName#', $appName, $t);
+                $t = file_get_contents('TJs');
+                $t = str_replace('#ClassName#', ucfirst($appName), $t);
                 fputs($file, $t);
                 fclose($file);
                 mkdir('apps/' . $appName . '/assets/i18n');
@@ -84,8 +86,9 @@ class Matter {
                 $appName = $this->args[1];
                 $viewName = $this->args[2];
                 echo "\nView [" . $viewName . "] building in App [" . $appName . "]...\n";
-                $file = fopen('apps/' . $appName . '/view/' . $viewName . 'View.php', 'a');
-                $t = file_get_contents('TView'); $t = str_replace('#ClassName#', $viewName, $t);
+                $file = fopen('apps/' . $appName . '/view/' . ucfirst($appName) . 'View.php', 'a');
+                $t = file_get_contents('TView');
+                $t = str_replace('#ClassName#', ucfirst($viewName), $t);
                 fputs($file, $t);
                 fclose($file);
                 echo "+ View\n";
@@ -96,8 +99,9 @@ class Matter {
                 $appName = $this->args[1];
                 $modelName = $this->args[2];
                 echo "\nModel [" . $modelName . "] building in App [" . $appName . "]...\n";
-                $file = fopen('apps/' . $appName . '/model/' . $modelName . 'Mdl.php', 'a');
-                $t = file_get_contents('TModel'); $t = str_replace('#ClassName#', $modelName, $t);
+                $file = fopen('apps/' . $appName . '/model/' . ucfirst($appName) . 'Mdl.php', 'a');
+                $t = file_get_contents('TModel');
+                $t = str_replace('#ClassName#', ucfirst($modelName), $t);
                 fputs($file, $t);
                 fclose($file);
                 echo "+ Model\n";
@@ -108,8 +112,9 @@ class Matter {
                 $appName = $this->args[1];
                 $controllerName = $this->args[2];
                 echo "\nController [" . $controllerName . "] building in App [" . $appName . "]...\n";
-                $file = fopen('apps/' . $appName . '/controller/' . $controllerName . 'Ctrl.php', 'a');
-                $t = file_get_contents('TController'); $t = str_replace('#ClassName#', $controllerName, $t);
+                $file = fopen('apps/' . $appName . '/controller/' . ucfirst($appName) . 'Ctrl.php', 'a');
+                $t = file_get_contents('TController');
+                $t = str_replace('#ClassName#', ucfirst($controllerName), $t);
                 fputs($file, $t);
                 fclose($file);
                 echo "+ Controller\n";

@@ -1,0 +1,15 @@
+
+#ClassName# = function(){};
+#ClassName#.prototype = {
+    yourMethod: function () {
+        // YOUR CODE HERE
+    },
+
+    eventListeners: function () {
+        var This = this;
+    },
+
+    init: function () {
+        this.eventListeners();
+    }
+};
