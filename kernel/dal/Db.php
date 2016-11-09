@@ -31,7 +31,7 @@ class Db {
         }
     }
 
-    public function query ($query, $parameters) {
+    public function query ($query, $parameters = null) {
         $db = $this->connect();
         $queryBinded = null;
         switch ($this->type) {
