@@ -86,7 +86,7 @@ class Matter {
                 $appName = $this->args[1];
                 $viewName = $this->args[2];
                 echo "\nView [" . $viewName . "] building in App [" . $appName . "]...\n";
-                $file = fopen('apps/' . $appName . '/view/' . ucfirst($appName) . 'View.php', 'a');
+                $file = fopen('apps/' . $appName . '/view/' . ucfirst($viewName) . '.php', 'a');
                 $t = file_get_contents('TView');
                 $t = str_replace('#ClassName#', ucfirst($viewName), $t);
                 fputs($file, $t);
@@ -99,7 +99,7 @@ class Matter {
                 $appName = $this->args[1];
                 $modelName = $this->args[2];
                 echo "\nModel [" . $modelName . "] building in App [" . $appName . "]...\n";
-                $file = fopen('apps/' . $appName . '/model/' . ucfirst($appName) . 'Mdl.php', 'a');
+                $file = fopen('apps/' . $appName . '/model/' . ucfirst($modelName) . '.php', 'a');
                 $t = file_get_contents('TModel');
                 $t = str_replace('#ClassName#', ucfirst($modelName), $t);
                 fputs($file, $t);
@@ -112,7 +112,7 @@ class Matter {
                 $appName = $this->args[1];
                 $controllerName = $this->args[2];
                 echo "\nController [" . $controllerName . "] building in App [" . $appName . "]...\n";
-                $file = fopen('apps/' . $appName . '/controller/' . ucfirst($appName) . 'Ctrl.php', 'a');
+                $file = fopen('apps/' . $appName . '/controller/' . ucfirst($controllerName) . '.php', 'a');
                 $t = file_get_contents('TController');
                 $t = str_replace('#ClassName#', ucfirst($controllerName), $t);
                 fputs($file, $t);
