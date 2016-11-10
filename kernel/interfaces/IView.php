@@ -40,6 +40,11 @@ abstract class IView {
         $this->html .= $html;
     }
 
+    protected function insert($appName, $controllerName, $method) {
+        $ctrl = Factory::get('\\Controller\\' . $controllerName, '../apps/' . $appName . '/controller');
+        $this->html .= Dispatcher::Forward($ctrl, $appName, $method);
+    }
+
     protected function css($resource) {
         $minifier = new \MatthiasMullie\Minify\CSS('../apps/' . $this->context . '/assets/css/' . $resource);
         $this->html .= '<style type="text/css">' . $minifier->minify() . '</style>';
