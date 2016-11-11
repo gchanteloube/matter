@@ -15,6 +15,7 @@ class Conversation {
     public static function init($type) {
         if ($type == "SESSION") {
             if (!isset(self::$instance)) {
+                session_start();
                 self::$instance = new Conversation();
             }
             self::$type = "SESSION";
