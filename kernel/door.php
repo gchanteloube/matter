@@ -31,7 +31,7 @@ if (\Matter\Utils::valid($action)) {
     }
 }
 
-function _u($method, $parameters) {
+function _u($method, $parameters = null) {
     $flux = opendir('../struct/dependency/utils');
     if ($flux) {
         while (false != ($file = readdir($flux))) {
