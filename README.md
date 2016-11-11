@@ -143,6 +143,17 @@ $this->view('MyView')->data(array('MyData' => $myData))->json();
 
 &nbsp;
 
+>For call code previous before controller insertion, redefined _before() method:
+```php
+public function _before () {
+    // This code will be called before controller insertion
+}
+```
+*Same way with _after()*
+
+&nbsp;
+
+
 View
 ----
 The view is the html render of your app. You have to define a "_default" method to be able to return the html.
