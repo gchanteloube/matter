@@ -40,7 +40,7 @@ abstract class IView {
         $this->html .= $html;
     }
 
-    protected function insert($appName, $controllerName, $method) {
+    protected function insert($appName, $controllerName, $method = null) {
         $ctrl = Factory::get('\\Controller\\' . $controllerName, '../apps/' . $appName . '/controller');
         $this->html .= Dispatcher::Forward($ctrl, $appName, $method);
     }
