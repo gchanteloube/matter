@@ -10,9 +10,11 @@ class Matter {
     }
 
     public function launch () {
+        echo "--------------------------------------------------------------------\n                         Lazy matter - V2.1\n--------------------------------------------------------------------\n";
+
         switch ($this->action) {
             case 'build:app':
-                $appName = strtolower($this->args[1]);
+                $appName = lcfirst($this->args[1]);
 
                 // Build app directory
                 echo "\nApp [" . $appName . "] building...\n";
@@ -83,12 +85,12 @@ class Matter {
                 echo "=> Your app is done! (https://your-project/$appName)\n";
                 break;
             case 'build:view':
-                $appName = $this->args[1];
-                $viewName = $this->args[2];
+                $appName = lcfirst($this->args[1]);
+                $viewName = ucfirst($this->args[2]);
                 echo "\nView [" . $viewName . "] building in App [" . $appName . "]...\n";
-                $file = fopen('apps/' . $appName . '/view/' . ucfirst($viewName) . '.php', 'a');
+                $file = fopen('apps/' . $appName . '/view/' . $viewName . '.php', 'a');
                 $t = file_get_contents('TView');
-                $t = str_replace('#ClassName#', ucfirst($viewName), $t);
+                $t = str_replace('#ClassName#', $viewName, $t);
                 fputs($file, $t);
                 fclose($file);
                 echo "+ View\n";
@@ -96,12 +98,12 @@ class Matter {
                 echo "=> Your view is done!\n";
                 break;
             case 'build:model':
-                $appName = $this->args[1];
-                $modelName = $this->args[2];
+                $appName = lcfirst($this->args[1]);
+                $modelName = ucfirst($this->args[2]);
                 echo "\nModel [" . $modelName . "] building in App [" . $appName . "]...\n";
-                $file = fopen('apps/' . $appName . '/model/' . ucfirst($modelName) . '.php', 'a');
+                $file = fopen('apps/' . $appName . '/model/' . $modelName . '.php', 'a');
                 $t = file_get_contents('TModel');
-                $t = str_replace('#ClassName#', ucfirst($modelName), $t);
+                $t = str_replace('#ClassName#', $modelName, $t);
                 fputs($file, $t);
                 fclose($file);
                 echo "+ Model\n";
@@ -109,12 +111,12 @@ class Matter {
                 echo "=> Your model is done!\n";
                 break;
             case 'build:controller':
-                $appName = $this->args[1];
-                $controllerName = $this->args[2];
+                $appName = lcfirst($this->args[1]);
+                $controllerName = ucfirst($this->args[2]);
                 echo "\nController [" . $controllerName . "] building in App [" . $appName . "]...\n";
-                $file = fopen('apps/' . $appName . '/controller/' . ucfirst($controllerName) . '.php', 'a');
+                $file = fopen('apps/' . $appName . '/controller/' . $controllerName . '.php', 'a');
                 $t = file_get_contents('TController');
-                $t = str_replace('#ClassName#', ucfirst($controllerName), $t);
+                $t = str_replace('#ClassName#', $controllerName, $t);
                 fputs($file, $t);
                 fclose($file);
                 echo "+ Controller\n";
@@ -122,5 +124,7 @@ class Matter {
                 echo "=> Your controller is done!\n";
                 break;
         }
+
+        echo "\n";
     }
 }
