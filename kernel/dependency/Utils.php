@@ -13,7 +13,7 @@ class Utils {
         if ($flux) {
             while (false != ($file = readdir($flux))) {
                 $extension = explode('.', $file);
-                if ($file != '.' && $file != '..' && $extension[1] == 'php') {
+                if ($file != '.' && $file != '..' && count($extension) > 1 && $extension[1] == 'php') {
                     require_once $dir . '/' . $file;
                 }
             }

@@ -10,6 +10,9 @@ require_once 'dependency/Utils.php';
 \Matter\Utils::loader('../struct/dependency/composer');
 \Matter\Utils::loader('../struct/dependency/utils');
 
+// Additional modules
+\Matter\Utils::loader('dependency/payway');
+
 /* @var $get Conversation */
 $get = \Matter\Conversation::init("GET");
 $action = $get->get("a_mr");

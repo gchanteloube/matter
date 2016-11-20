@@ -9,17 +9,23 @@ namespace View;
  */
 class MyView extends \Matter\IView {
     public function _default () {
+        /*
+        $invoice = \Payway\Invoice::create(
+            'Titre de ma facture',
+            array(
+                \Payway\Item::create('Box lancement', 40, 1, 0.200),
+                \Payway\Item::create('Box', 60, 1, 0.200)
+            )
+        );
+
+        \Payway\Payway::invoice($invoice);
+        */
+
+        $render = \Payway\Payway::render('starter.payway');
+
         $this->html('
-            ' . $this->i('welcome', 'www.clozly.com') . ' :
-            fhdfghdf fdhgdfg<br />fhtrt ' . _u('dam', $this->i('text')) . '
+            ' . $render . '
         ');
-
-        foreach ($this->d('users') as $user) {
-            $this->html('- ' . $user['email'] . '<br />');
-            //$this->html('- ' . $user['id_profile'] . '<br />');
-        }
-
-        $this->title('toto')->description('Ma description')->image('image.png');
     }
 }
 
