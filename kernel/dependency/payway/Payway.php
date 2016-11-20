@@ -11,11 +11,7 @@ namespace Payway;
 use Matter\Utils;
 
 class Payway {
-    // ************ Internal attributes ************ //
     public static $modulePath = '';
-
-    // ************ Invoice attributes ************ //
-    private static $invoice = null;
 
     public static function import () {
         require_once self::$modulePath . 'dependency/composer/vendor/autoload.php';
@@ -114,56 +110,30 @@ class Payway {
     }
 
     // ************ Payment with Stripe ************ //
-    public static function payment () {
+    public static function payment ($token, $amount, $label) {
         \Stripe\Stripe::setApiKey(self::getSkStripe());
 
-        $post = \Matter\Conversation::init('POST');
-        $token = $post->get('stripeToken');
-
         if (isset($token) && !empty($token) && $token != null) {
-            try {
-                $charge = \Stripe\Charge::create(array(
-                    "amount" => 100, // Amount in cents
-                    "currency" => "eur",
-                    "source" => $token,
-                    "description" => "Test invoice"
-                ));
-
-                if (isset(self::$invoice) && !empty(self::$invoice)) self::insertInvoice();
-
-                if (isset($charge) && !empty($charge) && $charge != null) echo 'true';
-                else echo 'false';
-            } catch (\Stripe\Error\Card $e) {
-                echo 'false';
-            }
+            \Stripe\Charge::create(array(
+                "amount" => $amount, // Amount in cents
+                "currency" => "eur",
+                "source" => $token,
+                "description" => $label
+            ));
+        } else {
+            throw new \Exception('Invalid token!');
         }
-    }
-
-    public static function callback ($callback) {
-
     }
 
     // ************ Invoice with Factures.pro ************ //
     public static function invoice($invoice) {
-        self::$invoice = $invoice;
-    }
-
-    private function insertInvoice() {
         $options = array(
             "currency" => "EUR",
             "customer_id" => 722833,
             "invoiced_on" => "2016-11-20",
-            "title" => self::$invoice,
+            "title" => $invoice['title'],
             "type_doc" => "draft",
-            "items" => array(
-                array(
-                    "position" => 1,
-                    "quantity" => "1.0",
-                    "title" => "1 box",
-                    "unit_price" => "60",
-                    "vat" => "0.200"
-                )
-            )
+            "items" => $invoice['items']
         );
         $creation = json_encode($options);
         $curl = curl_init();
@@ -182,17 +152,3 @@ class Payway {
         curl_close($curl);
     }
 }
-
-// ########################################################
-// # Internal process (call, callback, etc.) ##############
-// ########################################################
-
-/*
-if (array_key_exists('stripeToken', $_POST) && isset($_POST['stripeToken']) && !empty($_POST['stripeToken'])) {
-    Payway::$modulePath = '../../';
-    Payway::import();
-    Payway::payment();
-} else {
-    Payway::import();
-}
-*/

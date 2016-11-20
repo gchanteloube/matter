@@ -28,17 +28,25 @@ class MyController extends \Matter\IController {
     }
 
     public function payway () {
-        $tot = 12;
-        $invoice = \Payway\Invoice::create(
-            'Titre de ma facture',
-            array(
-                \Payway\Item::create('Box lancement', 40, 1, 0.200),
-                \Payway\Item::create('Box', 60, 1, 0.200)
-            )
-        );
-/*
-        \Payway\Payway::invoice($invoice);
-        */
+        $post = \Matter\Conversation::init('POST');
+        $token = $post->get('stripeToken');
+
+        if ($token != null) {
+            try {
+                \Payway\Payway::payment($token, 100, 'Test payway');
+                \Payway\Payway::invoice(
+                    \Payway\Invoice::create(
+                        'Titre de ma facture',
+                        array(
+                            \Payway\Item::create('Box lancement', 40, 1, 0.200),
+                            \Payway\Item::create('Box', 60, 1, 0.200)
+                        )
+                    )
+                );
+            } catch (\Exception $e) {
+                throw $e;
+            }
+        }
     }
 }
 ?>
