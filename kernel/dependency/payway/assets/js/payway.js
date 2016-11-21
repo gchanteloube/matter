@@ -6,7 +6,9 @@ Payway.prototype = {
 
         var $form = $('#payment-form');
         $form.submit(function() {
-            $form.find('.submit').prop('disabled', true);
+            $form.find('.label-pay-button').hide();
+            $form.find('.loader-pay-button').show();
+            $form.find('input').prop('disabled', true);
             Stripe.card.createToken($form, This.stripeResponseHandler);
             return false;
         });
@@ -17,18 +19,27 @@ Payway.prototype = {
 
         if (response.error) {
             $form.find('.payment-errors').text(response.error.message);
-            $form.find('.submit').prop('disabled', false);
+            $form.find('input').prop('disabled', false);
+            $form.find('.label-pay-button').show();
+            $form.find('.loader-pay-button').hide();
         } else {
             var token = response.id;
             $form.append($('<input type="hidden" name="stripeToken">').val(token));
-            $.ajax({
+
+            var payment = $.ajax({
                 url: $form.attr('action'),
                 type: $form.attr('method'),
                 data: $form.serialize(),
-                success: function(html) {
-                    alert(html);
-                }
-            });
+                async: false
+            }).responseText;
+
+            if (payment != null && payment != undefined) {
+                $form.find('.payment-errors').text($.parseJSON(payment));
+            }
+            $form.find('input').prop('disabled', false);
+            $form.find('input').val('');
+            $form.find('.label-pay-button').show();
+            $form.find('.loader-pay-button').hide();
         }
     },
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace Controller;
+use Matter\Message;
 
 /**
  * Description of MyController
@@ -32,8 +33,15 @@ class MyController extends \Matter\IController {
         $token = $post->get('stripeToken');
 
         if ($token != null) {
+            // Payment
             try {
                 \Payway\Payway::payment($token, 100, 'Test payway');
+            } catch (\Exception $e) {
+                return (new Message('Your payment has failed. No transactions have been made on your CB. Contact our technical service or try again later'))->json();
+            }
+
+            // Facturation
+            try {
                 \Payway\Payway::invoice(
                     \Payway\Invoice::create(
                         'Titre de ma facture',
@@ -44,9 +52,11 @@ class MyController extends \Matter\IController {
                     )
                 );
             } catch (\Exception $e) {
-                throw $e;
+                // Facturation crash!
             }
         }
+
+        return (new Message('Your payment was done, thank you.'))->json();
     }
 }
 ?>

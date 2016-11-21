@@ -13,13 +13,6 @@ use Matter\Utils;
 class Payway {
     public static $modulePath = '';
 
-    public static function import () {
-        require_once self::$modulePath . 'dependency/composer/vendor/autoload.php';
-        require_once self::$modulePath . 'dependency/Utils.php';
-        require_once self::$modulePath . 'business/Conversation.php';
-        require_once self::$modulePath . 'dependency/payway/Invoice.php';
-    }
-
     public static function getEnvironment() {
         $environment_ini = parse_ini_file(self::$modulePath . '../conf/environment.ini', true);
         $environment = $environment_ini['current_environment']['environment'];
@@ -90,7 +83,10 @@ class Payway {
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="button postfix pay-button">' . $button . '</button>
+                        <button type="submit" class="button postfix pay-button">
+                            <img class="loader-pay-button" src="kernel/dependency/payway/assets/img/loader.svg" />
+                            <span class="label-pay-button">' . $button . '</span>
+                        </button>
                     </form>
                 </div>
             </div>
@@ -130,7 +126,6 @@ class Payway {
         $options = array(
             "currency" => "EUR",
             "customer_id" => 722833,
-            "invoiced_on" => "2016-11-20",
             "title" => $invoice['title'],
             "type_doc" => "draft",
             "items" => $invoice['items']
@@ -144,11 +139,11 @@ class Payway {
         curl_setopt($curl, CURLOPT_USERAGENT,'User-Agent: MonApp (guillaumech@gmail.com)');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_COOKIESESSION, true);
-        //curl_setopt($curl, CURLOPT_SSLVERSION, 3);
-        //curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+        //curl_setopt($curl, CURLOPT_SSLVERSION, 3); Failed
+        //curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0); Failed
         curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
         curl_setopt($curl, CURLOPT_HEADER, true);
-        $return = curl_exec($curl);
+        curl_exec($curl);
         curl_close($curl);
     }
 }

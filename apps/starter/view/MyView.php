@@ -9,7 +9,7 @@ namespace View;
  */
 class MyView extends \Matter\IView {
     public function _default () {
-        $render = \Payway\Payway::render('starter.payway');
+        $render = \Payway\Payway::render('S/starter.payway');
 
         $this->html('
             ' . $render . '
