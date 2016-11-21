@@ -31,11 +31,12 @@ class MyController extends \Matter\IController {
     public function payway () {
         $post = \Matter\Conversation::init('POST');
         $token = $post->get('stripeToken');
+        $ref = 'REF_' . bin2hex(openssl_random_pseudo_bytes(13));
 
         if ($token != null) {
             // Payment
             try {
-                \Payway\Payway::payment($token, 100, 'Test payway');
+                \Payway\Payway::payment($token, 100, $ref);
             } catch (\Exception $e) {
                 return (new Message('Your payment has failed. No transactions have been made on your CB. Contact our technical service or try again later'))->json();
             }
@@ -59,7 +60,8 @@ class MyController extends \Matter\IController {
                             \Payway\Item::create('Box lancement', 40, 1, 0.200),
                             \Payway\Item::create('Box', 60, 1, 0.200)
                         )
-                    )
+                    ),
+                    $ref
                 );
             } catch (\Exception $e) {
                 // Facturation crash!

@@ -20,8 +20,7 @@ class Customer {
             'zip_code' => $zipCode,
             'phone' => $phone,
             'email' => $email,
-            'individual' => $individual,
-            'field1' => 'The rocket is on the launch pad'
+            'individual' => $individual
         );
     }
 }

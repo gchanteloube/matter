@@ -113,7 +113,7 @@ class Payway {
     }
 
     // ************ Invoice with Factures.pro ************ //
-    public static function invoice($customer, $invoice) {
+    public static function invoice($customer, $invoice, $ref) {
         if (isset($customer) && !empty($customer)) {
             if ($customer['id'] != null) {
                 self::_invoice($customer['id'], $invoice);
@@ -121,17 +121,19 @@ class Payway {
                 unset($customer['id']);
                 $id = self::_customer($customer);
 
-                if ($id != null) self::_invoice($id, $invoice);
+                if ($id != null) self::_invoice($id, $invoice, $ref);
             }
         }
     }
 
-    private static function _invoice ($customerId, $invoice) {
+    private static function _invoice ($customerId, $invoice, $ref) {
         $options = array(
             "currency" => "EUR",
             "customer_id" => $customerId,
             "title" => $invoice['title'],
             "type_doc" => "draft",
+            "payment_ref" => $ref,
+            "payment_mode" => 2,
             "items" => $invoice['items']
         );
 
