@@ -9,12 +9,60 @@
 namespace Payway;
 
 use Matter\Utils;
+use Stripe\Stripe;
 
 class Payway {
-    public static $modulePath = '';
+    public static $token = null;
+    public static $ref = null;
+    public static $number = null;
+    public static $name = null;
+    public static $exp_month = null;
+    public static $exp_year = null;
+    public static $cvc = null;
+
+    public static function init() {
+        \Stripe\Stripe::setApiKey(self::getEnvironment('sk_stripe'));
+
+        if (array_key_exists('stripeToken', $_POST) &&
+            array_key_exists('number', $_POST) &&
+            array_key_exists('name', $_POST) &&
+            array_key_exists('exp_month', $_POST) &&
+            array_key_exists('exp_year', $_POST) &&
+            array_key_exists('cvc', $_POST)) {
+            self::$number = $_POST['number'];
+            self::$name = $_POST['name'];
+            self::$exp_month = $_POST['exp_month'];
+            self::$exp_year = $_POST['exp_year'];
+            self::$cvc = $_POST['cvc'];
+
+            self::createToken();
+        } else {
+            throw new \Exception('Invalid parameters!');
+        }
+    }
+
+    private static function createToken($street = null, $city = null, $zipCode = null, $country = null) {
+        self::$token = \Stripe\Token::create(array(
+            "card" => array(
+                "number" => self::$number,
+                "name" => self::$name,
+                "exp_month" => self::$exp_month,
+                "exp_year" => self::$exp_year,
+                "cvc" => self::$cvc,
+                "address_country" => $country,
+                "address_city" => $city,
+                "address_line1" => $street,
+                "address_zip" => $zipCode
+            )
+        ));
+    }
+
+    public static function setRef($ref) {
+        self::$ref = $ref;
+    }
 
     private static function getEnvironment($key = null) {
-        $environment_ini = parse_ini_file(self::$modulePath . '../conf/environment.ini', true);
+        $environment_ini = parse_ini_file('../conf/environment.ini', true);
         $environment = $environment_ini['current_environment']['environment'];
         if ($key == null) return $environment_ini[$environment];
         else return $environment_ini[$environment][$key];
@@ -60,12 +108,12 @@ class Payway {
                             </div>
                             <div class="col-xs-2 month-container">
                                 <div class="input-group">
-                                    <input class="form-control number-payment no-radius" placeholder="' . $monthPlaceholder . '" type="text" name="expiry" data-stripe="exp_month">
+                                    <input class="form-control number-payment no-radius" placeholder="' . $monthPlaceholder . '" type="text" name="exp_month" data-stripe="exp_month">
                                 </div>
                             </div>
                             <div class="col-xs-2 year-container">
                                 <div class="input-group">
-                                    <input class="form-control number-payment" placeholder="' . $yearPlaceholder . '" type="text" name="expiry" data-stripe="exp_year">
+                                    <input class="form-control number-payment" placeholder="' . $yearPlaceholder . '" type="text" name="exp_year" data-stripe="exp_year">
                                 </div>
                             </div>
                             <div class="col-xs-2 cvc-container">
@@ -97,42 +145,55 @@ class Payway {
     }
 
     // ************ Payment with Stripe ************ //
-    public static function payment ($token, $amount, $label) {
-        \Stripe\Stripe::setApiKey(self::getEnvironment('sk_stripe'));
+    public static function payment ($amount, $customer = null) {
+        if (isset(self::$token) && !empty(self::$token) && self::$token != null) {
+            if ($customer['stripeId'] == null) {
+                self::createToken($customer['street'], $customer['city'], $customer['zip_code'], $customer['country']);
 
-        if (isset($token) && !empty($token) && $token != null) {
-            \Stripe\Charge::create(array(
-                "amount" => $amount, // Amount in cents
-                "currency" => "eur",
-                "source" => $token,
-                "description" => $label
-            ));
+                $customer = \Stripe\Customer::create(array(
+                    "description" => $customer['first_name'] . ' ' . $customer['last_name'],
+                    "source" => self::$token
+                ));
+
+                \Stripe\Charge::create(array(
+                    "amount" => $amount,
+                    "currency" => "eur",
+                    "customer" => $customer->id,
+                    "email" => $customer['email'],
+                    "description" => self::$ref
+                ));
+            } else {
+                \Stripe\Charge::create(array(
+                    "amount" => $amount,
+                    "currency" => "eur",
+                    "customer" => $customer['stripeId'],
+                    "description" => self::$ref
+                ));
+            }
         } else {
             throw new \Exception('Invalid token!');
         }
     }
 
     // ************ Invoice with Factures.pro ************ //
-    public static function invoice($customer, $invoice, $ref) {
+    public static function invoice($customer, $invoice) {
         if (isset($customer) && !empty($customer)) {
-            if ($customer['id'] != null) {
-                self::_invoice($customer['id'], $invoice);
+            if ($customer['facturesId'] != null) {
+                self::_invoice($customer['facturesId'], $invoice);
             } else {
-                unset($customer['id']);
                 $id = self::_customer($customer);
-
-                if ($id != null) self::_invoice($id, $invoice, $ref);
+                if ($id != null) self::_invoice($id, $invoice);
             }
         }
     }
 
-    private static function _invoice ($customerId, $invoice, $ref) {
+    private static function _invoice ($customerId, $invoice) {
         $options = array(
             "currency" => "EUR",
             "customer_id" => $customerId,
             "title" => $invoice['title'],
             "type_doc" => "draft",
-            "payment_ref" => $ref,
+            "payment_ref" => self::$ref,
             "payment_mode" => 2,
             "items" => $invoice['items']
         );

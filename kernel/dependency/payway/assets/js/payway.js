@@ -24,12 +24,15 @@ Payway.prototype = {
             $form.find('.loader-pay-button').hide();
         } else {
             var token = response.id;
+            $form.find('input').prop('disabled', false);
             $form.append($('<input type="hidden" name="stripeToken">').val(token));
+            var serializable = $form.serialize();
+            $form.find('input').prop('disabled', true);
 
             var payment = $.ajax({
                 url: $form.attr('action'),
                 type: $form.attr('method'),
-                data: $form.serialize(),
+                data: serializable,
                 async: false
             }).responseText;
 

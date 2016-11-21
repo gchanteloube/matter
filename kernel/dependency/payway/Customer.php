@@ -10,17 +10,19 @@ namespace Payway;
 
 
 class Customer {
-    public static function create ($id = null, $firstName, $lastName, $street, $city, $zipCode, $phone, $email, $individual = true) {
+    public static function create ($firstName, $lastName, $street, $city, $zipCode, $country, $phone, $email, $individual, $stripeId = null, $facturesId = null) {
         return array(
-            'id' => $id,
-            'first_name' => $firstName,
-            'last_name' => $lastName,
-            'street' => $street,
-            'city' => $city,
-            'zip_code' => $zipCode,
-            'phone' => $phone,
-            'email' => $email,
-            'individual' => $individual
+            'first_name' => ucfirst(trim($firstName)),
+            'last_name' => ucfirst(trim($lastName)),
+            'street' => trim($street),
+            'city' => trim(ucwords($city)),
+            'zip_code' => trim($zipCode),
+            'country' => trim($country),
+            'phone' => trim($phone),
+            'email' => trim(strtolower($email)),
+            'individual' => $individual,
+            'stripeId' => $stripeId,
+            'facturesId' => $facturesId
         );
     }
 }
