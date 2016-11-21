@@ -43,6 +43,16 @@ class MyController extends \Matter\IController {
             // Facturation
             try {
                 \Payway\Payway::invoice(
+                    \Payway\Customer::create(
+                        null,
+                        'Guillaume',
+                        'Chanteloube',
+                        '33b rue Bataille',
+                        'Lyon',
+                        '69008',
+                        '0603541823',
+                        'guillaumech@gmail.com'
+                    ),
                     \Payway\Invoice::create(
                         'Titre de ma facture',
                         array(

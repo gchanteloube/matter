@@ -13,20 +13,11 @@ use Matter\Utils;
 class Payway {
     public static $modulePath = '';
 
-    public static function getEnvironment() {
+    private static function getEnvironment($key = null) {
         $environment_ini = parse_ini_file(self::$modulePath . '../conf/environment.ini', true);
         $environment = $environment_ini['current_environment']['environment'];
-        return $environment_ini[$environment];
-    }
-
-    public static function getSkStripe() {
-        $environment = Payway::getEnvironment();
-        return $environment['sk_stripe'];
-    }
-
-    public static function getPkStripe() {
-        $environment = Payway::getEnvironment();
-        return $environment['pk_stripe'];
+        if ($key == null) return $environment_ini[$environment];
+        else return $environment_ini[$environment][$key];
     }
 
     public static function render(  $action,
@@ -95,7 +86,7 @@ class Payway {
             <script src="kernel/dependency/payway/assets/js/card.js" type="text/javascript"></script>
             <script src="kernel/dependency/payway/assets/js/payway.js" type="text/javascript"></script>
             <script type="text/javascript">
-                Stripe.setPublishableKey(\'' . self::getPkStripe() . '\');
+                Stripe.setPublishableKey(\'' . self::getEnvironment('pk_stripe') . '\');
                 
                 var payway = new Payway();
                 payway.init();
@@ -107,7 +98,7 @@ class Payway {
 
     // ************ Payment with Stripe ************ //
     public static function payment ($token, $amount, $label) {
-        \Stripe\Stripe::setApiKey(self::getSkStripe());
+        \Stripe\Stripe::setApiKey(self::getEnvironment('sk_stripe'));
 
         if (isset($token) && !empty($token) && $token != null) {
             \Stripe\Charge::create(array(
@@ -122,28 +113,63 @@ class Payway {
     }
 
     // ************ Invoice with Factures.pro ************ //
-    public static function invoice($invoice) {
+    public static function invoice($customer, $invoice) {
+        if (isset($customer) && !empty($customer)) {
+            if ($customer['id'] != null) {
+                self::_invoice($customer['id'], $invoice);
+            } else {
+                unset($customer['id']);
+                $id = self::_customer($customer);
+
+                if ($id != null) self::_invoice($id, $invoice);
+            }
+        }
+    }
+
+    private static function _invoice ($customerId, $invoice) {
         $options = array(
             "currency" => "EUR",
-            "customer_id" => 722833,
+            "customer_id" => $customerId,
             "title" => $invoice['title'],
             "type_doc" => "draft",
             "items" => $invoice['items']
         );
-        $creation = json_encode($options);
+
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, 'https://www.facturation.pro/firms/44295/invoices.json');
+        $curl = self::_curlHeader($curl);
+        curl_setopt($curl, CURLOPT_URL, 'https://www.facturation.pro/firms/' . self::getEnvironment('firm_id_factures') . '/invoices.json');
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($options));
+        curl_exec($curl);
+        curl_close($curl);
+    }
+
+    private static function _customer ($customer) {
+        $curl = curl_init();
+        $curl = self::_curlHeader($curl);
+        curl_setopt($curl, CURLOPT_URL, 'https://www.facturation.pro/firms/' . self::getEnvironment('firm_id_factures') . '/customers.json');
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($customer));
+        $return = self::curlReturn(curl_exec($curl));
+        curl_close($curl);
+
+        if (isset($return) && !empty($return) && array_key_exists('id', $return)) return $return->id;
+        else return null;
+    }
+
+    private static function _curlHeader ($curl) {
         curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $creation);
-        curl_setopt($curl, CURLOPT_USERPWD, '41335:UkJ9u5Na0yKZsVVDGeG6');
-        curl_setopt($curl, CURLOPT_USERAGENT,'User-Agent: MonApp (guillaumech@gmail.com)');
+        curl_setopt($curl, CURLOPT_USERPWD, self::getEnvironment('access_factures'));
+        curl_setopt($curl, CURLOPT_USERAGENT,'User-Agent: ' . self::getEnvironment('app_factures') . ' (' . self::getEnvironment('email_factures') . ')');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_COOKIESESSION, true);
         //curl_setopt($curl, CURLOPT_SSLVERSION, 3); Failed
         //curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0); Failed
         curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
         curl_setopt($curl, CURLOPT_HEADER, true);
-        curl_exec($curl);
-        curl_close($curl);
+        return $curl;
+    }
+
+    private function curlReturn($return) {
+        $response = split("\n", $return);
+        return json_decode($response[count($response) - 1]);
     }
 }
