@@ -28,10 +28,6 @@ class MyController extends \Matter\IController {
         return $this->view('MyView')->data(array('users' => $users));
     }
 
-    public function paypal () {
-        file_put_contents('../log', $_POST['address_country']);
-    }
-
     public function payway () {
         try {
             \Payway\Payway::init();

@@ -1,1 +1,1 @@
-United States
+a:12:{s:10:"first_name";s:4:"John";s:9:"last_name";s:5:"Smith";s:6:"street";s:14:"123 any street";s:4:"city";s:8:"San Jose";s:8:"zip_code";s:5:"95131";s:7:"country";s:13:"United States";s:12:"country_code";s:2:"US";s:5:"phone";N;s:5:"email";s:23:"buyer@paypalsandbox.com";s:10:"individual";b:1;s:9:"stripe_id";N;s:10:"facture_id";N;}

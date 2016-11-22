@@ -19,8 +19,8 @@ class Payway {
     private static $exp_month = null;
     private static $exp_year = null;
     private static $cvc = null;
-    private static $paypal = null;
-    private static $customer = null;
+    private static $paypal = false;
+    public static $customer = null;
 
 
     public static function init() {
@@ -49,6 +49,21 @@ class Payway {
             }
         } else {
             // Paypal
+            self::$customer = array(
+                'first_name' => $_POST['first_name'],
+                'last_name' => $_POST['last_name'],
+                'street' => $_POST['address_street'],
+                'city' => $_POST['address_city'],
+                'zip_code' => $_POST['address_zip'],
+                'country' => $_POST['address_country'],
+                'country_code' => $_POST['address_country_code'],
+                'phone' => null,
+                'email' => $_POST['payer_email'],
+                'individual' => true,
+                'stripe_id' => null,
+                'facture_id' => null
+            );
+            self::$paypal = true;
         }
     }
 
@@ -72,11 +87,11 @@ class Payway {
         self::$ref = $ref;
     }
 
-    public static function paypal($form) {
-        self::$paypal = $form;
+    public static function paypal($inputs) {
+        self::$paypal = $inputs;
     }
 
-    public static function customer($firstName, $lastName, $street, $city, $zipCode, $country, $phone, $email, $individual, $stripeId = null, $facturesId = null) {
+    public static function customer($firstName, $lastName, $street, $city, $zipCode, $country, $countryCode, $phone, $email, $individual, $stripeId = null, $facturesId = null) {
         $customer = array(
             'first_name' => ucfirst(trim($firstName)),
             'last_name' => ucfirst(trim($lastName)),
@@ -84,6 +99,7 @@ class Payway {
             'city' => trim(ucwords($city)),
             'zip_code' => trim($zipCode),
             'country' => trim($country),
+            'country_code' => $countryCode,
             'phone' => trim($phone),
             'email' => trim(strtolower($email)),
             'individual' => $individual,
@@ -179,8 +195,11 @@ class Payway {
                     <div class="paypal-container">
                         <img class="paypal-logo" src="kernel/dependency/payway/assets/img/paypal.png" />
                         <div class="paypal-module">
-                            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">                                
+                                <input type="hidden" name="cmd" value="_s-xclick">
                                 ' . self::$paypal . '
+                                <input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal, le réflexe sécurité pour payer en ligne">
+                                <img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1">
                                 <input type="hidden" name="first_name" value="' . $customer['first_name'] . '">
                                 <input type="hidden" name="last_name" value="' . $customer['last_name'] . '">
                                 <input type="hidden" name="address1" value="' . $customer['street'] . '">
@@ -188,6 +207,7 @@ class Payway {
                                 <input type="hidden" name="zip" value="' . $customer['zip_code'] . '">
                                 <input type="hidden" name="night_phone_a" value="' . $customer['phone'] . '">
                                 <input type="hidden" name="email" value="' . $customer['email'] . '">
+                                <input name="notify_url" value="' . $action . '" type="hidden">
                                 
                 ';
 
@@ -216,30 +236,31 @@ class Payway {
 
     // ************ Payment with Stripe ************ //
     public static function payment ($amount) {
-        if (isset(self::$token) && !empty(self::$token) && self::$token != null) {
-            if (self::$customer['stripe_id'] == null) {
-                $customer = \Stripe\Customer::create(array(
-                    "description" => self::$customer['first_name'] . ' ' . self::$customer['last_name'],
-                    "source" => self::$token
-                ));
+        if (!self::$paypal) {
+            if (isset(self::$token) && !empty(self::$token) && self::$token != null) {
+                if (self::$customer['stripe_id'] == null) {
+                    $customer = \Stripe\Customer::create(array(
+                        "description" => self::$customer['first_name'] . ' ' . self::$customer['last_name'],
+                        "source" => self::$token
+                    ));
 
-                \Stripe\Charge::create(array(
-                    "amount" => $amount,
-                    "currency" => "eur",
-                    "customer" => $customer->id,
-                    "email" => self::$customer['email'],
-                    "description" => self::$ref
-                ));
+                    \Stripe\Charge::create(array(
+                        "amount" => $amount,
+                        "currency" => "eur",
+                        "customer" => $customer->id,
+                        "description" => self::$ref
+                    ));
+                } else {
+                    \Stripe\Charge::create(array(
+                        "amount" => $amount,
+                        "currency" => "eur",
+                        "customer" => self::$customer['stripe_id'],
+                        "description" => self::$ref
+                    ));
+                }
             } else {
-                \Stripe\Charge::create(array(
-                    "amount" => $amount,
-                    "currency" => "eur",
-                    "customer" => self::$customer['stripe_id'],
-                    "description" => self::$ref
-                ));
+                throw new \Exception('Invalid token!');
             }
-        } else {
-            throw new \Exception('Invalid token!');
         }
     }
 
@@ -249,14 +270,14 @@ class Payway {
             if (self::$customer['facture_id'] != null) {
                 self::_invoice(self::$customer['facture_id'], $invoice);
             } else {
-                $id = self::_customer(self::$customer);
+                $id = self::_customer();
                 if ($id != null) self::_invoice($id, $invoice);
             }
         }
     }
 
     private static function _invoice ($customerId, $invoice) {
-        $options = array(
+        $data = array(
             "currency" => "EUR",
             "customer_id" => $customerId,
             "title" => $invoice['title'],
@@ -269,16 +290,28 @@ class Payway {
         $curl = curl_init();
         $curl = self::_curlHeader($curl);
         curl_setopt($curl, CURLOPT_URL, 'https://www.facturation.pro/firms/' . self::getEnvironment('firm_id_facturepro') . '/invoices.json');
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($options));
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
         curl_exec($curl);
         curl_close($curl);
     }
 
-    private static function _customer ($customer) {
+    private static function _customer () {
+        $data = array(
+            'first_name' => self::$customer['first_name'],
+            'last_name' => self::$customer['last_name'],
+            'street' => self::$customer['street'],
+            'city' => self::$customer['city'],
+            'zip_code' => self::$customer['zip_code'],
+            'country' => self::$customer['country_code'],
+            'phone' => self::$customer['phone'],
+            'email' => self::$customer['email'],
+            'individual' => true
+        );
+
         $curl = curl_init();
         $curl = self::_curlHeader($curl);
         curl_setopt($curl, CURLOPT_URL, 'https://www.facturation.pro/firms/' . self::getEnvironment('firm_id_facturepro') . '/customers.json');
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($customer));
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
         $return = self::curlReturn(curl_exec($curl));
         curl_close($curl);
 
