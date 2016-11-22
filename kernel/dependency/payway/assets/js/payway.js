@@ -12,6 +12,11 @@ Payway.prototype = {
             Stripe.card.createToken($form, This.stripeResponseHandler);
             return false;
         });
+
+        $('.paypal-logo').click(function () {
+            $('.paypal-logo').hide();
+            $('.paypal-module').show();
+        });
     },
 
     stripeResponseHandler: function (status, response) {

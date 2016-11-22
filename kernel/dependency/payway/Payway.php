@@ -8,40 +8,51 @@
 
 namespace Payway;
 
+use Matter\Conversation;
 use Matter\Utils;
-use Stripe\Stripe;
 
 class Payway {
-    public static $token = null;
-    public static $ref = null;
-    public static $number = null;
-    public static $name = null;
-    public static $exp_month = null;
-    public static $exp_year = null;
-    public static $cvc = null;
+    private static $token = null;
+    private static $ref = null;
+    private static $number = null;
+    private static $name = null;
+    private static $exp_month = null;
+    private static $exp_year = null;
+    private static $cvc = null;
+    private static $paypal = null;
+    private static $customer = null;
+
 
     public static function init() {
-        \Stripe\Stripe::setApiKey(self::getEnvironment('sk_stripe'));
+        if (array_key_exists('stripeToken', $_POST)) {
+            // Stripe
+            \Stripe\Stripe::setApiKey(self::getEnvironment('sk_stripe'));
 
-        if (array_key_exists('stripeToken', $_POST) &&
-            array_key_exists('number', $_POST) &&
-            array_key_exists('name', $_POST) &&
-            array_key_exists('exp_month', $_POST) &&
-            array_key_exists('exp_year', $_POST) &&
-            array_key_exists('cvc', $_POST)) {
-            self::$number = $_POST['number'];
-            self::$name = $_POST['name'];
-            self::$exp_month = $_POST['exp_month'];
-            self::$exp_year = $_POST['exp_year'];
-            self::$cvc = $_POST['cvc'];
+            $session = Conversation::init('SESSION');
+            $data = self::encrypt('decrypt', $session->get('pw_JgZ6XDu8354aynFTwy3Z2HZgM2xqNv64t66', false));
+            self::$customer = unserialize($data);
 
-            self::createToken();
+            if (array_key_exists('number', $_POST) &&
+                array_key_exists('name', $_POST) &&
+                array_key_exists('exp_month', $_POST) &&
+                array_key_exists('exp_year', $_POST) &&
+                array_key_exists('cvc', $_POST)) {
+                self::$number = $_POST['number'];
+                self::$name = $_POST['name'];
+                self::$exp_month = $_POST['exp_month'];
+                self::$exp_year = $_POST['exp_year'];
+                self::$cvc = $_POST['cvc'];
+
+                self::createToken();
+            } else {
+                throw new \Exception('Invalid parameters!');
+            }
         } else {
-            throw new \Exception('Invalid parameters!');
+            // Paypal
         }
     }
 
-    private static function createToken($street = null, $city = null, $zipCode = null, $country = null) {
+    private static function createToken() {
         self::$token = \Stripe\Token::create(array(
             "card" => array(
                 "number" => self::$number,
@@ -49,16 +60,40 @@ class Payway {
                 "exp_month" => self::$exp_month,
                 "exp_year" => self::$exp_year,
                 "cvc" => self::$cvc,
-                "address_country" => $country,
-                "address_city" => $city,
-                "address_line1" => $street,
-                "address_zip" => $zipCode
+                "address_country" => self::$customer['country'],
+                "address_city" => self::$customer['city'],
+                "address_line1" => self::$customer['street'],
+                "address_zip" => self::$customer['zip_code']
             )
         ));
     }
 
     public static function setRef($ref) {
         self::$ref = $ref;
+    }
+
+    public static function paypal($form) {
+        self::$paypal = $form;
+    }
+
+    public static function customer($firstName, $lastName, $street, $city, $zipCode, $country, $phone, $email, $individual, $stripeId = null, $facturesId = null) {
+        $customer = array(
+            'first_name' => ucfirst(trim($firstName)),
+            'last_name' => ucfirst(trim($lastName)),
+            'street' => trim($street),
+            'city' => trim(ucwords($city)),
+            'zip_code' => trim($zipCode),
+            'country' => trim($country),
+            'phone' => trim($phone),
+            'email' => trim(strtolower($email)),
+            'individual' => $individual,
+            'stripe_id' => $stripeId,
+            'facture_id' => $facturesId
+        );
+
+        $session = Conversation::init('SESSION');
+        $data = self::encrypt('encrypt', serialize($customer));
+        $session->set('pw_JgZ6XDu8354aynFTwy3Z2HZgM2xqNv64t66', $data, false);
     }
 
     private static function getEnvironment($key = null) {
@@ -76,82 +111,115 @@ class Payway {
                                     $monthPlaceholder = 'MM',
                                     $yearPlaceholder = 'YY',
                                     $cvcPlaceholder = 'CVC') {
-        $html = '
-            <link rel="stylesheet" href="kernel/dependency/payway/assets/css/payway.css" type="text/css" />
-                    
-            <div class="payment-container">
-                <label class="payment-title">' . $title . '</label>
-                <div class="card-wrapper"></div>
+        $session = Conversation::init('SESSION');
+        $data = self::encrypt('decrypt', $session->get('pw_JgZ6XDu8354aynFTwy3Z2HZgM2xqNv64t66', false));
+        $customer = unserialize($data);
 
-                <div class="form-container active">
-                    <form action="' . $action . '" id="payment-form" method="POST">
-                        <span class="payment-errors"></span>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-credit-card" aria-hidden="true"></i>
-                                    </span>
-                                    <input class="form-control number-payment" placeholder="' . $cardPlaceholder . '" type="text" name="number" data-stripe="number">
+        if (!Utils::valid($customer)) {
+            return 'A customer required!';
+        } else {
+            $html = '
+                <link rel="stylesheet" href="kernel/dependency/payway/assets/css/payway.css" type="text/css" />
+                        
+                <div class="payment-container">
+                    <label class="payment-title"><i class="fa fa-shield" aria-hidden="true"></i> ' . $title . '</label>
+                    <div class="card-wrapper"></div>
+    
+                    <div class="form-container active">
+                        <form action="' . $action . '" id="payment-form" method="POST">
+                            <span class="payment-errors"></span>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-credit-card" aria-hidden="true"></i>
+                                        </span>
+                                        <input class="form-control number-payment" placeholder="' . $cardPlaceholder . '" type="text" name="number" data-stripe="number">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <br />
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-user" aria-hidden="true"></i>
-                                    </span>
-                                    <input class="form-control number-payment" placeholder="' . $namePlaceholder . '" type="text" name="name" data-stripe="name">
+                            <br />
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-user" aria-hidden="true"></i>
+                                        </span>
+                                        <input class="form-control number-payment" placeholder="' . $namePlaceholder . '" type="text" name="name" data-stripe="name">
+                                    </div>
+                                </div>
+                                <div class="col-xs-2 month-container">
+                                    <div class="input-group">
+                                        <input class="form-control number-payment no-radius" placeholder="' . $monthPlaceholder . '" type="text" name="exp_month" data-stripe="exp_month">
+                                    </div>
+                                </div>
+                                <div class="col-xs-2 year-container">
+                                    <div class="input-group">
+                                        <input class="form-control number-payment" placeholder="' . $yearPlaceholder . '" type="text" name="exp_year" data-stripe="exp_year">
+                                    </div>
+                                </div>
+                                <div class="col-xs-2 cvc-container">
+                                    <div class="input-group">
+                                        <input class="form-control number-payment" placeholder="' . $cvcPlaceholder . '" type="text" name="cvc" data-stripe="cvc">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-xs-2 month-container">
-                                <div class="input-group">
-                                    <input class="form-control number-payment no-radius" placeholder="' . $monthPlaceholder . '" type="text" name="exp_month" data-stripe="exp_month">
-                                </div>
-                            </div>
-                            <div class="col-xs-2 year-container">
-                                <div class="input-group">
-                                    <input class="form-control number-payment" placeholder="' . $yearPlaceholder . '" type="text" name="exp_year" data-stripe="exp_year">
-                                </div>
-                            </div>
-                            <div class="col-xs-2 cvc-container">
-                                <div class="input-group">
-                                    <input class="form-control number-payment" placeholder="' . $cvcPlaceholder . '" type="text" name="cvc" data-stripe="cvc">
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="button postfix pay-button">
-                            <img class="loader-pay-button" src="kernel/dependency/payway/assets/img/loader.svg" />
-                            <span class="label-pay-button">' . $button . '</span>
-                        </button>
-                    </form>
+                            <button type="submit" class="button postfix pay-button">
+                                <img class="loader-pay-button" src="kernel/dependency/payway/assets/img/loader.svg" />
+                                <span class="label-pay-button">' . $button . '</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            ';
 
-            <script src="https://js.stripe.com/v2/" type="text/javascript"></script>
-            <script src="kernel/dependency/payway/assets/js/card.js" type="text/javascript"></script>
-            <script src="kernel/dependency/payway/assets/js/payway.js" type="text/javascript"></script>
-            <script type="text/javascript">
-                Stripe.setPublishableKey(\'' . self::getEnvironment('pk_stripe') . '\');
-                
-                var payway = new Payway();
-                payway.init();
-            </script>
-        ';
+            if (self::$paypal != null) {
+                $html .= '
+                    <label class="or-paypal">or</label>
+                    <div class="paypal-container">
+                        <img class="paypal-logo" src="kernel/dependency/payway/assets/img/paypal.png" />
+                        <div class="paypal-module">
+                            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                                ' . self::$paypal . '
+                                <input type="hidden" name="first_name" value="' . $customer['first_name'] . '">
+                                <input type="hidden" name="last_name" value="' . $customer['last_name'] . '">
+                                <input type="hidden" name="address1" value="' . $customer['street'] . '">
+                                <input type="hidden" name="city" value="' . $customer['city'] . '">
+                                <input type="hidden" name="zip" value="' . $customer['zip_code'] . '">
+                                <input type="hidden" name="night_phone_a" value="' . $customer['phone'] . '">
+                                <input type="hidden" name="email" value="' . $customer['email'] . '">
+                                
+                ';
 
-        return $html;
+                $html .= '
+                            </form>
+                        </div>
+                    </div>
+                ';
+            }
+
+            $html .= '
+                <script src="https://js.stripe.com/v2/" type="text/javascript"></script>
+                <script src="kernel/dependency/payway/assets/js/card.js" type="text/javascript"></script>
+                <script src="kernel/dependency/payway/assets/js/payway.js" type="text/javascript"></script>
+                <script type="text/javascript">
+                    Stripe.setPublishableKey(\'' . self::getEnvironment('pk_stripe') . '\');
+                    
+                    var payway = new Payway();
+                    payway.init();
+                </script>
+            ';
+
+            return $html;
+        }
     }
 
     // ************ Payment with Stripe ************ //
-    public static function payment ($amount, $customer = null) {
+    public static function payment ($amount) {
         if (isset(self::$token) && !empty(self::$token) && self::$token != null) {
-            if ($customer['stripeId'] == null) {
-                self::createToken($customer['street'], $customer['city'], $customer['zip_code'], $customer['country']);
-
+            if (self::$customer['stripe_id'] == null) {
                 $customer = \Stripe\Customer::create(array(
-                    "description" => $customer['first_name'] . ' ' . $customer['last_name'],
+                    "description" => self::$customer['first_name'] . ' ' . self::$customer['last_name'],
                     "source" => self::$token
                 ));
 
@@ -159,14 +227,14 @@ class Payway {
                     "amount" => $amount,
                     "currency" => "eur",
                     "customer" => $customer->id,
-                    "email" => $customer['email'],
+                    "email" => self::$customer['email'],
                     "description" => self::$ref
                 ));
             } else {
                 \Stripe\Charge::create(array(
                     "amount" => $amount,
                     "currency" => "eur",
-                    "customer" => $customer['stripeId'],
+                    "customer" => self::$customer['stripe_id'],
                     "description" => self::$ref
                 ));
             }
@@ -176,12 +244,12 @@ class Payway {
     }
 
     // ************ Invoice with Factures.pro ************ //
-    public static function invoice($customer, $invoice) {
-        if (isset($customer) && !empty($customer)) {
-            if ($customer['facturesId'] != null) {
-                self::_invoice($customer['facturesId'], $invoice);
+    public static function invoice($invoice) {
+        if (isset(self::$customer) && !empty(self::$customer)) {
+            if (self::$customer['facture_id'] != null) {
+                self::_invoice(self::$customer['facture_id'], $invoice);
             } else {
-                $id = self::_customer($customer);
+                $id = self::_customer(self::$customer);
                 if ($id != null) self::_invoice($id, $invoice);
             }
         }
@@ -200,7 +268,7 @@ class Payway {
 
         $curl = curl_init();
         $curl = self::_curlHeader($curl);
-        curl_setopt($curl, CURLOPT_URL, 'https://www.facturation.pro/firms/' . self::getEnvironment('firm_id_factures') . '/invoices.json');
+        curl_setopt($curl, CURLOPT_URL, 'https://www.facturation.pro/firms/' . self::getEnvironment('firm_id_facturepro') . '/invoices.json');
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($options));
         curl_exec($curl);
         curl_close($curl);
@@ -209,7 +277,7 @@ class Payway {
     private static function _customer ($customer) {
         $curl = curl_init();
         $curl = self::_curlHeader($curl);
-        curl_setopt($curl, CURLOPT_URL, 'https://www.facturation.pro/firms/' . self::getEnvironment('firm_id_factures') . '/customers.json');
+        curl_setopt($curl, CURLOPT_URL, 'https://www.facturation.pro/firms/' . self::getEnvironment('firm_id_facturepro') . '/customers.json');
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($customer));
         $return = self::curlReturn(curl_exec($curl));
         curl_close($curl);
@@ -220,8 +288,8 @@ class Payway {
 
     private static function _curlHeader ($curl) {
         curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_USERPWD, self::getEnvironment('access_factures'));
-        curl_setopt($curl, CURLOPT_USERAGENT,'User-Agent: ' . self::getEnvironment('app_factures') . ' (' . self::getEnvironment('email_factures') . ')');
+        curl_setopt($curl, CURLOPT_USERPWD, self::getEnvironment('access_facturepro'));
+        curl_setopt($curl, CURLOPT_USERAGENT,'User-Agent: ' . self::getEnvironment('app_facturepro') . ' (' . self::getEnvironment('email_facturepro') . ')');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_COOKIESESSION, true);
         //curl_setopt($curl, CURLOPT_SSLVERSION, 3); Failed
@@ -231,8 +299,47 @@ class Payway {
         return $curl;
     }
 
-    private function curlReturn($return) {
+    private static function curlReturn($return) {
         $response = split("\n", $return);
         return json_decode($response[count($response) - 1]);
+    }
+
+    private static function encrypt($action, $string) {
+        $output = false;
+
+        $encrypt_method = "AES-256-CBC";
+        $secret_key = 'This is my secret key';
+        $secret_iv = 'This is my secret iv';
+
+        // hash
+        $key = hash('sha256', $secret_key);
+
+        // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+        $iv = substr(hash('sha256', $secret_iv), 0, 16);
+
+        if( $action == 'encrypt' ) {
+            $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
+            $output = base64_encode($output);
+        }
+        else if( $action == 'decrypt' ){
+            $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
+        }
+
+        return $output;
+    }
+
+    private static function decrypt($data) {
+        $key = "secret";
+        $td = mcrypt_module_open(MCRYPT_DES,"",MCRYPT_MODE_ECB,"");
+        $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
+        mcrypt_generic_init($td,$key,$iv);
+        $data = mdecrypt_generic($td, base64_decode($data));
+        mcrypt_generic_deinit($td);
+
+        if (substr($data,0,1) != '!')
+            return false;
+
+        $data = substr($data,1,strlen($data)-1);
+        return unserialize($data);
     }
 }

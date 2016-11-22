@@ -44,3 +44,21 @@
 .loader-pay-button {
     display: none;
 }
+
+.or-paypal {
+    display: block;
+    text-align: center;
+    margin-top: 7px;
+}
+
+.paypal-container {
+    text-align: center;
+}
+
+.paypal-logo {
+    cursor: pointer;
+}
+
+.paypal-module {
+    display: none;
+}

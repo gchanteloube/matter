@@ -28,6 +28,10 @@ class MyController extends \Matter\IController {
         return $this->view('MyView')->data(array('users' => $users));
     }
 
+    public function paypal () {
+        file_put_contents('../log', $_POST['address_country']);
+    }
+
     public function payway () {
         try {
             \Payway\Payway::init();
@@ -36,23 +40,9 @@ class MyController extends \Matter\IController {
             return (new Message('Your payment has failed. No transactions have been made on your CB. Contact our technical service or try again later'))->json();
         }
 
-        $customer = \Payway\Customer::create(
-            'Guillaume',
-            'Chanteloube',
-            '33b rue Bataille',
-            'Lyon',
-            '69008',
-            'France',
-            '0603541823',
-            'guillaumech@gmail.com',
-            true,
-            'cus_9beb1QygUS6GUf',
-            '722832'
-        );
-
         // Payment
         try {
-            \Payway\Payway::payment(100, $customer); // Amount in cents!
+            \Payway\Payway::payment(100); // Amount in cents!
         } catch (\Exception $e) {
             return (new Message('Your payment has failed. No transactions have been made on your CB. Contact our technical service or try again later'))->json();
         }
@@ -60,7 +50,6 @@ class MyController extends \Matter\IController {
         // Facturation
         try {
             \Payway\Payway::invoice(
-                $customer,
                 \Payway\Invoice::create(
                     'Titre de ma facture',
                     array(
