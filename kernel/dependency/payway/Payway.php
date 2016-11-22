@@ -207,7 +207,7 @@ class Payway {
                                 <input type="hidden" name="zip" value="' . $customer['zip_code'] . '">
                                 <input type="hidden" name="night_phone_a" value="' . $customer['phone'] . '">
                                 <input type="hidden" name="email" value="' . $customer['email'] . '">
-                                <input name="notify_url" value="' . $action . '" type="hidden">
+                                <input name="notify_url" value="' . Utils::getEnvironment()['site'] . '/' . $action . '" type="hidden">
                                 
                 ';
 
