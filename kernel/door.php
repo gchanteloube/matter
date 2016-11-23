@@ -1,5 +1,7 @@
 <?php
 
+set_error_handler('exceptions_error_handler');
+
 // Class auto loaded
 require_once 'dependency/composer/vendor/autoload.php';
 require_once 'dependency/Utils.php';
@@ -46,6 +48,15 @@ function _u($method, $parameters = null) {
                 }
             }
         }
+    }
+}
+
+function exceptions_error_handler($severity, $message, $filename, $lineno) {
+    if (error_reporting() == 0) {
+        return;
+    }
+    if (error_reporting() & $severity) {
+        throw new ErrorException($message, 0, $severity, $filename, $lineno);
     }
 }
 
