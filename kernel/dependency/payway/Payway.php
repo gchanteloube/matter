@@ -120,10 +120,10 @@ class Payway {
     }
 
     public static function render(  $action,
-                                    $title = 'Secure payment',
-                                    $button = 'Payment',
-                                    $cardPlaceholder = 'Card number',
-                                    $namePlaceholder = 'Full name',
+                                    $title = 'Paiement sécurisé',
+                                    $button = 'Payer',
+                                    $cardPlaceholder = 'Numéro de carte',
+                                    $namePlaceholder = 'Nom du titulaire',
                                     $monthPlaceholder = 'MM',
                                     $yearPlaceholder = 'YY',
                                     $cvcPlaceholder = 'CVC') {
@@ -139,13 +139,15 @@ class Payway {
                         
                 <div class="payment-container">
                     <label class="payment-title"><i class="fa fa-shield" aria-hidden="true"></i> ' . $title . '</label>
+                    <img class="cb-img" src="kernel/dependency/payway/assets/img/cb.jpg" />
                     <div class="card-wrapper"></div>
-    
+
                     <div class="form-container active">
                         <form action="' . $action . '" id="payment-form" method="POST">
                             <span class="payment-errors"></span>
                             <div class="row">
                                 <div class="col-xs-12">
+                                    Numéro de carte
                                     <div class="input-group">
                                         <span class="input-group-addon">
                                             <i class="fa fa-credit-card" aria-hidden="true"></i>
@@ -157,26 +159,30 @@ class Payway {
                             <br />
                             <div class="row">
                                 <div class="col-xs-6">
+                                    Nom du titulaire
                                     <div class="input-group">
                                         <span class="input-group-addon">
                                             <i class="fa fa-user" aria-hidden="true"></i>
                                         </span>
-                                        <input class="form-control number-payment" placeholder="' . $namePlaceholder . '" type="text" name="name" data-stripe="name">
+                                        <input class="form-control" placeholder="' . $namePlaceholder . '" type="text" name="name" data-stripe="name">
                                     </div>
                                 </div>
                                 <div class="col-xs-2 month-container">
+                                    Mois
                                     <div class="input-group">
-                                        <input class="form-control number-payment no-radius" placeholder="' . $monthPlaceholder . '" type="text" name="exp_month" data-stripe="exp_month">
+                                        <input class="form-control no-radius" placeholder="' . $monthPlaceholder . '" type="text" name="exp_month" data-stripe="exp_month">
                                     </div>
                                 </div>
                                 <div class="col-xs-2 year-container">
+                                    Année
                                     <div class="input-group">
-                                        <input class="form-control number-payment" placeholder="' . $yearPlaceholder . '" type="text" name="exp_year" data-stripe="exp_year">
+                                        <input class="form-control" placeholder="' . $yearPlaceholder . '" type="text" name="exp_year" data-stripe="exp_year">
                                     </div>
                                 </div>
                                 <div class="col-xs-2 cvc-container">
+                                    Code
                                     <div class="input-group">
-                                        <input class="form-control number-payment" placeholder="' . $cvcPlaceholder . '" type="text" name="cvc" data-stripe="cvc">
+                                        <input class="form-control cvc-payment" placeholder="' . $cvcPlaceholder . '" type="text" name="cvc" data-stripe="cvc">
                                     </div>
                                 </div>
                             </div>
@@ -191,7 +197,7 @@ class Payway {
 
             if (self::$paypal != null) {
                 $html .= '
-                    <label class="or-paypal">or</label>
+                    <label class="or-paypal">ou</label>
                     <div class="paypal-container">
                         <img class="paypal-logo" src="kernel/dependency/payway/assets/img/paypal.png" />
                         <div class="paypal-module">

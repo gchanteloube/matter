@@ -74,7 +74,7 @@ var card =
                     formatting: true,
                     formSelectors: {
                         numberInput: 'input[name="number"]',
-                        expiryInput: 'input[name="expiry"]',
+                        expiryInput: 'input[name="exp_month"], input[name="exp_year"]',
                         cvcInput: 'input[name="cvc"]',
                         nameInput: 'input[name="name"]'
                     },

@@ -62,3 +62,12 @@
 .paypal-module {
     display: none;
 }
+
+.cb-img {
+    float: right;
+    margin-top: 19px;
+}
+
+.cvc-payment {
+    padding: 7px;
+}
