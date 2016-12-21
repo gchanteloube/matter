@@ -74,14 +74,14 @@ abstract class IView {
     public function title($title) {
         /* @var $kernel \Matter\Conversation */
         $kernel = Conversation::init('KERNEL');
-        $kernel->set('title_mr', $title);
+        $kernel->set('title_mr', $title, false);
         return $this;
     }
 
     public function description($description) {
         /* @var $kernel \Matter\Conversation */
         $kernel = Conversation::init('KERNEL');
-        $kernel->set('desc_mr', $description);
+        $kernel->set('desc_mr', $description, false);
         return $this;
     }
 

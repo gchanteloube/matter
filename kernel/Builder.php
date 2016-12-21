@@ -107,10 +107,10 @@ class Builder {
         Utils::valid($facebook['fb_app_id']) ? $meta .= '<meta property="fb:app_id" content="' . $facebook['fb_app_id'] . '">' : false;
         Utils::valid($facebook['fb_page_id']) ? $meta .= '<meta property="fb:page_id" content="' . $facebook['fb_page_id'] . '">' : false;
         Utils::valid($general['site_name']) ? $meta .= '<meta property="og:site_name" content="' . $general['site_name'] . '">' : false;
-        if (Utils::valid($kernel->get('title_mr'))) $meta .= '<meta property="og:title" content="' . $kernel->get('title_mr') . '">';
-        else if (Utils::valid($general['title'])) $meta .= '<meta property="og:title" content="' . $general['title'] . '">';
-        if (Utils::valid($kernel->get('desc_mr'))) $meta .= '<meta property="og:description" content="' . $kernel->get('desc_mr') . '">';
-        else if (Utils::valid($general['description'])) $meta .= '<meta property="og:description" content="' . $general['description'] . '">';
+        if (Utils::valid($kernel->get('title_mr'))) $meta .= '<meta property="og:title" content="' . str_replace('&amp;', '&', $kernel->get('title_mr')) . '">';
+        else if (Utils::valid($general['title'])) $meta .= '<meta property="og:title" content="' . str_replace('&amp;', '&', $general['title']) . '">';
+        if (Utils::valid($kernel->get('desc_mr'))) $meta .= '<meta property="og:description" content="' . str_replace('&amp;', '&', $kernel->get('desc_mr')) . '">';
+        else if (Utils::valid($general['description'])) $meta .= '<meta property="og:description" content="' . str_replace('&amp;', '&', $general['description']) . '">';
         if (Utils::valid($kernel->get('image_mr'))) $meta .= '<meta property="og:image" content="' . $kernel->get('image_mr') . '">';
         else if (Utils::valid($general['image'])) $meta .= '<meta property="og:image" content="' . $general['image'] . '">';
         $meta .= '<meta property="og:url" content="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" />';
@@ -125,10 +125,10 @@ class Builder {
         $meta .= '<meta name="twitter:card" content="summary_large_image">';
         Utils::valid($general['site_name']) ? $meta .= '<meta property="twitter:site_name" content="' . $general['site_name'] . '">' : false;
         $meta .= '<meta property="twitter:url" content="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '" />';
-        if (Utils::valid($kernel->get('title_mr'))) $meta .= '<meta property="twitter:title" content="' . $kernel->get('title_mr') . '">';
-        else if (Utils::valid($general['title'])) $meta .= '<meta property="twitter:title" content="' . $general['title'] . '">';
-        if (Utils::valid($kernel->get('desc_mr'))) $meta .= '<meta property="twitter:description" content="' . $kernel->get('desc_mr') . '">';
-        else if (Utils::valid($general['description'])) $meta .= '<meta property="twitter:description" content="' . $general['description'] . '">';
+        if (Utils::valid($kernel->get('title_mr'))) $meta .= '<meta property="twitter:title" content="' . str_replace('&amp;', '&', $kernel->get('title_mr')) . '">';
+        else if (Utils::valid($general['title'])) $meta .= '<meta property="twitter:title" content="' . str_replace('&amp;', '&', $general['title']) . '">';
+        if (Utils::valid($kernel->get('desc_mr'))) $meta .= '<meta property="twitter:description" content="' . str_replace('&amp;', '&', $kernel->get('desc_mr')) . '">';
+        else if (Utils::valid($general['description'])) $meta .= '<meta property="twitter:description" content="' . str_replace('&amp;', '&', $general['description']) . '">';
         if (Utils::valid($kernel->get('image_mr'))) $meta .= '<meta property="twitter:image" content="' . $kernel->get('image_mr') . '">';
         else if (Utils::valid($general['image'])) $meta .= '<meta property="twitter:image" content="' . $general['image'] . '">';
 
