@@ -406,4 +406,79 @@ $data = _u('method', $myData, $otherData, etc.);
 
 &nbsp;
 
+Payway
+------
+You want put a payway in your project, beautiful UI, all cards accepted and invoice management. Matter Framework use Stripe and Paypal 
+for its payment module. Refere to environment.ini for your stripe and facture.pro account. 
+Below steps for enable and use Matter payway
+
+>Init paywway (in your controller)
+```php
+$ref = 'REF_' . bin2hex(openssl_random_pseudo_bytes(13));
+try {
+    \Payway\Payway::init();
+    \Payway\Payway::setRef($ref);
+} catch (\Exception $e) {
+    return (new Message('Error...'))->json();
+}
+```
+
+>Build UI payway (in your view)
+```php
+\Payway\Payway::customer(
+    firstName,
+    lastName,
+    street,
+    city,
+    zip_code,
+    country,
+    'FR',
+    phone,
+    email,
+    true,
+    sId, // Stripe id
+    fpId // Facture pro id
+);
+
+$render = \Payway\Payway::render('S/payment.pay');
+```
+*Render is UI payway; with flip CB card!*
+
+Your are ready for pay!
+
+> Pay with payway
+```php
+$amount = $this->getAmount();
+try {
+    \Payway\Payway::payment($amount * 100); // Amount in cents!
+} catch (\Exception $e) {
+    return (new Message('Error...'))->json();
+}
+```
+
+You can get customer pay with this method (for example to confirm payment with an email):
+>Get customer pay
+```php
+$customer = \Payway\Payway::currentCustomer();
+```
+
+You can build an invoice after payment. Matter use Facture.pro for manage invoices. You have to create an account on website.
+>Build an invoice
+```php
+try {
+    \Payway\Payway::invoice(
+        \Payway\Invoice::create(
+            'Title',
+            array(
+                \Payway\Item::create(title, price, number, vat)
+            )
+        )
+    );
+} catch (\Exception $e) {
+    return (new Message('Error...'))->json();
+}
+```
+
+&nbsp;
+
 
