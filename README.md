@@ -316,6 +316,7 @@ $post = Conversation::init('POST');
 $id = $post->get('id_value');
 ```
 *Work with GET, POST, SESSION, COOKIE*
+
 You have to use this way for your data, because your data will be automaticaly protected!
 
 &nbsp;
