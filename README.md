@@ -47,7 +47,8 @@ On each environment you can define other variables, as default database, locale,
 ```text
 [current_environment]
 environment = "prod"
- 
+```
+```text
 [prod]
 site = "prod_url"
 db = "master"
@@ -61,7 +62,8 @@ access_facturepro = "passwd"
 email_facturepro = "email"
 app_facturepro = "name"
 customer_facturepro = "1234"
-&nbsp;
+```
+```text
 [dev]
 ...
 ..
