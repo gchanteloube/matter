@@ -309,7 +309,14 @@ https://your-project/S/[app][.method]
 
 Conversation
 ------------
-You can catch your data parameters with [Matter\Conversation] class
+All user data or internal data use [Matter\Conversation] class. This class is used to transport data.
+>Catch user data (POST):
+```php
+$post = Conversation::init('POST');
+$id = $post->get('id_value');
+```
+*Work with GET, POST, SESSION, COOKIE*
+You have to use this way for your data, because your data will be automaticaly protected!
 
 &nbsp;
 
