@@ -38,6 +38,37 @@ Architecture
 
 &nbsp;
 
+Define your environment configuration
+-------------------------------------
+Matter Framework work with conf/environment.ini file. This file declare your environments (dev, pre-prod, prod, etc.). 
+On each environment you can define other variables, as default database, locale, stripe account for payment (with Matter Payway), etc. 
+
+>Below an example
+```text
+[current_environment]
+environment = "prod"
+
+[prod]
+site = "prod_url"
+db = "master"
+locale = "fr_FR"
+db_error = "true"
+cache = "true"
+pk_stripe = "pk_live"
+sk_stripe = "sk_live"
+firm_id_facturepro = "1234"
+access_facturepro = "passwd"
+email_facturepro = "email"
+app_facturepro = "name"
+customer_facturepro = "1234"
+
+[dev]
+...
+..
+.
+```
+*For change dev to prod environment, just change [current_environment] var*
+
 First step
 ----------
 1. **Build your template**. All your templates are inside the struct/templates/ directory.
