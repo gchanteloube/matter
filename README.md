@@ -47,7 +47,7 @@ On each environment you can define other variables, as default database, locale,
 ```text
 [current_environment]
 environment = "prod"
-&nbsp;
+ 
 [prod]
 site = "prod_url"
 db = "master"
