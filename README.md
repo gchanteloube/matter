@@ -439,13 +439,11 @@ try {
     sId, // Stripe id
     fpId // Facture pro id
 );
-
 $render = \Payway\Payway::render('S/payment.pay');
 ```
 *Render is UI payway; with flip CB card!*
 
 Your are ready for pay!
-
 > Pay with payway
 ```php
 $amount = $this->getAmount();
