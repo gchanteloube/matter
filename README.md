@@ -309,7 +309,7 @@ https://your-project/S/[app][.method]
 
 Conversation
 ------------
-All user data or internal data use [Matter\Conversation] class. This class is used to transport data.
+All user data or internal data use [\Matter\Conversation] class. This class is used to transport data.
 >Catch user data (POST):
 ```php
 $post = Conversation::init('POST');
@@ -318,6 +318,18 @@ $id = $post->get('id_value');
 *Work with GET, POST, SESSION, COOKIE*
 
 You have to use this way for your data, because your data will be automaticaly protected!
+
+&nbsp;
+
+Forward
+-------
+If you want forward your user to another route, you can use [\Matter\Forword] class. You can pass parameters to your destination 
+route.
+>Forward to, with parameter:
+```php
+Forward::to('account.delivery', $data);
+```
+*For catch data in account.delivery, use Forward::get('Params')*
 
 &nbsp;
 
