@@ -100,7 +100,7 @@ Your app is declared in apps.xml file, with a default set of parameters:
 
 Controller
 ----------
-The controller is the entry door of your app. You can call it using a specific method 
+The controller [YourApp/controller/YourAppCtrl] is the entry door of your app. You can call it using a specific method 
 *(section: Call your app)*. Without specifying a method, the "_default()" method will be called.
 
 &nbsp;
@@ -156,7 +156,7 @@ public function _before () {
 
 View
 ----
-The view is the html render of your app. You have to define a "_default" method to be able to return the html.
+The view [YourApp/view/YourAppView] is the html render of your app. You have to define a "_default" method to be able to return the html.
 
 &nbsp;
 
@@ -210,7 +210,7 @@ $this->title('MyTitle')->description('MyDescription')->image('myImage.png');
 
 Model
 ----
-The model is what you use to catch data and perform some specific operation in order to not overcharge your controller. 
+The model [YourApp/model/YourAppMdl] is what you use to catch data and perform some specific operation in order to not overcharge your controller. 
 It will often be the place where you will perform DB requests for example, or launch a bash script. 
 You can then return all relevant data to your controller. 
 Your queries and all your parameters are protected by your DB methods. The concept of Transaction is used. 
@@ -226,6 +226,7 @@ port_db = "5432" // port to listen to
 name_db = "my_database" // name of the db
 user_db = "my_user" // username
 passwd_db = "my_password" // password
+encrypt_db = "my_key_encrypt" // for encrypt data
 ```
 *You can print out database error by turning on "db_error" in your conf/environment.ini file.*
 
@@ -273,6 +274,22 @@ If all queries are successful, the execute() method returns an array for each qu
 ```php
 $db = $this->db('database_alias')->query('Select * from table')->execute();
 ```
+
+**You can crypt your data in database easly! :**
+This process is only available on postgreSQL database.
+
+>Crypt your data in DB:
+```php
+$db->query('Insert into table (field) values ('~@1');
+```
+*Observe "~" character. With this, your data will be automaticaly encrypt in your database, with AES method.*
+
+>Read encrypt data from your DB:
+```php
+$db->query('Select ~field as field from table;
+```
+*Note that alias fiedl is mandatory with decrypt process!*
+
 
 &nbsp;
 
@@ -329,19 +346,25 @@ route.
 ```php
 Forward::to('account.delivery', $data);
 ```
-*For catch data in account.delivery, use Forward::get('Params')*
+>Catch parameter:
+```php
+$data = Forward::get('Params')
+```
+*This class use \Matter\Crypt method for parameters. These parameters will save only on the next page, after that, it will be destroyed*
 
 &nbsp;
 
-Utils
+Crypt
 -----
-You can defined as many Utils classes as you want.
-There are located in the struct/dependency/utils/ directory. 
-They are autoloaded and you can use them directly, every where.
->Call to your utils method
+Matter framework use encryption method for sensitive data. The [\Matter\Crypt] class use sha256 algo for encrypt parameters. 
+It's used in Forward and Payway. You can used every where, for protect your data!
+route.
+>Crypt and decrypt data:
 ```php
-$data = _u('method', $myData, $otherData, etc.);
+Crypt::encrypt($data);
+Crypt::decrypt($data);
 ```
+*This class use \Matter\Crypt method for parameters*
 
 &nbsp;
 
@@ -370,4 +393,17 @@ $this->html('
 ');
 ```
 *https://your-project/fr_FR/welcome*
+
+Utils
+-----
+You can defined as many Utils classes as you want.
+There are located in the struct/dependency/utils/ directory. 
+They are autoloaded and you can use them directly, every where.
+>Call to your utils method
+```php
+$data = _u('method', $myData, $otherData, etc.);
+```
+
+&nbsp;
+
 
