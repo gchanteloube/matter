@@ -9,6 +9,7 @@
 namespace Payway;
 
 use Matter\Conversation;
+use Matter\Crypt;
 use Matter\Utils;
 
 class Payway {
@@ -29,7 +30,7 @@ class Payway {
             \Stripe\Stripe::setApiKey(self::getEnvironment('sk_stripe'));
 
             $session = Conversation::init('SESSION');
-            $data = self::encrypt('decrypt', $session->get('pw_JgZ6XDu8354aynFTwy3Z2HZgM2xqNv64t66', false));
+            $data = Crypt::decrypt($session->get('pw_JgZ6XDu8354aynFTwy3Z2HZgM2xqNv64t66', false));
             self::$customer = unserialize($data);
 
             if (array_key_exists('number', $_POST) &&
@@ -91,6 +92,17 @@ class Payway {
         self::$paypal = $inputs;
     }
 
+    public static function currentCustomer() {
+        $session = Conversation::init('SESSION');
+        $data = Crypt::decrypt($session->get('pw_JgZ6XDu8354aynFTwy3Z2HZgM2xqNv64t66', false));
+        return unserialize($data);
+    }
+
+    public static function clear() {
+        $session = Conversation::init('SESSION');
+        $session->set('pw_JgZ6XDu8354aynFTwy3Z2HZgM2xqNv64t66', '');
+    }
+
     public static function customer($firstName, $lastName, $street, $city, $zipCode, $country, $countryCode, $phone, $email, $individual, $stripeId = null, $facturesId = null) {
         $customer = array(
             'first_name' => ucfirst(trim($firstName)),
@@ -108,7 +120,7 @@ class Payway {
         );
 
         $session = Conversation::init('SESSION');
-        $data = self::encrypt('encrypt', serialize($customer));
+        $data = Crypt::encrypt(serialize($customer));
         $session->set('pw_JgZ6XDu8354aynFTwy3Z2HZgM2xqNv64t66', $data, false);
     }
 
@@ -128,7 +140,7 @@ class Payway {
                                     $yearPlaceholder = 'YY',
                                     $cvcPlaceholder = 'CVC') {
         $session = Conversation::init('SESSION');
-        $data = self::encrypt('decrypt', $session->get('pw_JgZ6XDu8354aynFTwy3Z2HZgM2xqNv64t66', false));
+        $data = Crypt::decrypt($session->get('pw_JgZ6XDu8354aynFTwy3Z2HZgM2xqNv64t66', false));
         $customer = unserialize($data);
 
         if (!Utils::valid($customer)) {
@@ -158,7 +170,7 @@ class Payway {
                             </div>
                             <br />
                             <div class="row">
-                                <div class="col-xs-6">
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     Nom du titulaire
                                     <div class="input-group">
                                         <span class="input-group-addon">
@@ -167,19 +179,19 @@ class Payway {
                                         <input class="form-control" placeholder="' . $namePlaceholder . '" type="text" name="name" data-stripe="name">
                                     </div>
                                 </div>
-                                <div class="col-xs-2 month-container">
+                                <div class="col-xs-4 col-sm-2 col-md-2 col-lg-2 month-container">
                                     Mois
                                     <div class="input-group">
                                         <input class="form-control no-radius" placeholder="' . $monthPlaceholder . '" type="text" name="exp_month" data-stripe="exp_month">
                                     </div>
                                 </div>
-                                <div class="col-xs-2 year-container">
+                                <div class="col-xs-4 col-sm-2 col-md-2 col-lg-2 year-container">
                                     Année
                                     <div class="input-group">
                                         <input class="form-control" placeholder="' . $yearPlaceholder . '" type="text" name="exp_year" data-stripe="exp_year">
                                     </div>
                                 </div>
-                                <div class="col-xs-2 cvc-container">
+                                <div class="col-xs-4 col-sm-2 col-md-2 col-lg-2 cvc-container">
                                     Code
                                     <div class="input-group">
                                         <input class="form-control cvc-payment" placeholder="' . $cvcPlaceholder . '" type="text" name="cvc" data-stripe="cvc">
@@ -287,9 +299,10 @@ class Payway {
             "currency" => "EUR",
             "customer_id" => $customerId,
             "title" => $invoice['title'],
-            "type_doc" => "draft",
             "payment_ref" => self::$ref,
             "payment_mode" => 2,
+            "vat_exemption" => 'Offre de lancement',
+            "paid_on" => (new \DateTime('now'))->format('Y-m-d G:i:s'),
             "items" => $invoice['items']
         );
 
@@ -297,7 +310,7 @@ class Payway {
         $curl = self::_curlHeader($curl);
         curl_setopt($curl, CURLOPT_URL, 'https://www.facturation.pro/firms/' . self::getEnvironment('firm_id_facturepro') . '/invoices.json');
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_exec($curl);
+        $return = curl_exec($curl);
         curl_close($curl);
     }
 
@@ -341,44 +354,5 @@ class Payway {
     private static function curlReturn($return) {
         $response = split("\n", $return);
         return json_decode($response[count($response) - 1]);
-    }
-
-    private static function encrypt($action, $string) {
-        $output = false;
-
-        $encrypt_method = "AES-256-CBC";
-        $secret_key = 'This is my secret key';
-        $secret_iv = 'This is my secret iv';
-
-        // hash
-        $key = hash('sha256', $secret_key);
-
-        // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
-        $iv = substr(hash('sha256', $secret_iv), 0, 16);
-
-        if( $action == 'encrypt' ) {
-            $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
-            $output = base64_encode($output);
-        }
-        else if( $action == 'decrypt' ){
-            $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
-        }
-
-        return $output;
-    }
-
-    private static function decrypt($data) {
-        $key = "secret";
-        $td = mcrypt_module_open(MCRYPT_DES,"",MCRYPT_MODE_ECB,"");
-        $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
-        mcrypt_generic_init($td,$key,$iv);
-        $data = mdecrypt_generic($td, base64_decode($data));
-        mcrypt_generic_deinit($td);
-
-        if (substr($data,0,1) != '!')
-            return false;
-
-        $data = substr($data,1,strlen($data)-1);
-        return unserialize($data);
     }
 }

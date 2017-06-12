@@ -46,11 +46,24 @@ class Postgres {
         $patterns = array();
         $replace = array();
 
+        $encrypt = Utils::getDatabase('master')['encrypt_db'];
+        for ($i = count($args); $i > 0; $i--) {
+            $patterns[] = '/\'~@' . $i . '\'/';
+            $d = pg_escape_string($db, $args[$i - 1]);
+            array_push($replace, 'encrypt(\'' . $d . '\', \'' . $encrypt . '\', \'aes\')');
+        }
+        $query = preg_replace($patterns, $replace, $query);
+
         for ($i = count($args); $i > 0; $i--) {
             $patterns[] = '/@' . $i . '/';
             array_push($replace, pg_escape_string($db, $args[$i - 1]));
         }
+        $query = preg_replace($patterns, $replace, $query);
 
-        return preg_replace($patterns, $replace, $query);
+        // Decrypt for select query
+        $query = preg_replace('/~(\w+\.\w+)/i', 'convert_from(decrypt(${1}::bytea, \'' . $encrypt . '\', \'aes\'), \'UTF-8\')', $query);
+        $query = preg_replace('/~(\w+)/i', 'convert_from(decrypt(${1}::bytea, \'' . $encrypt . '\', \'aes\'), \'UTF-8\')', $query);
+
+        return $query;
     }
 }

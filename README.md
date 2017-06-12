@@ -57,7 +57,7 @@ Use it! This is fast and reliable!
 
 &nbsp;
 
-**Here are some common usages:**
+**Here are some CLI common usages:**
 
 >App creation (or other), use matter.phar
 ```shell

@@ -71,3 +71,13 @@
 .cvc-payment {
     padding: 7px;
 }
+
+.jp-card {
+    min-width: inherit !important;
+}
+
+@media screen and (max-width: 700px) {
+    .month-container {
+        padding: 0 15px 0 15px;
+    }
+}

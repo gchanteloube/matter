@@ -42,7 +42,9 @@ Payway.prototype = {
             }).responseText;
 
             if (payment != null && payment != undefined) {
-                $form.find('.payment-errors').text($.parseJSON(payment));
+                var confirm = $.parseJSON(payment);
+                if (confirm == 'Your payment was done, thank you.') document.location.href = 'payment.confirm';
+                else $form.find('.payment-errors').text(confirm);
             }
             $form.find('input').prop('disabled', false);
             $form.find('input').val('');
