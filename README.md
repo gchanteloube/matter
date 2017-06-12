@@ -307,6 +307,12 @@ https://your-project/S/[app][.method]
 
 &nbsp;
 
+Conversation
+------------
+You can catch your data parameters with [Matter\Conversation] class
+
+&nbsp;
+
 Utils
 -----
 You can defined as many Utils classes as you want.
